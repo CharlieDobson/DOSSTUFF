@@ -51,7 +51,7 @@ char* LOGFILE::GetFilePath( void ) const
 
 BOOL LOGFILE::Delete( void )
 {
-	return remove( _filepath ) == 0 ? TRUE : FALSE;
+    return remove( _filepath ) == 0 ? TRUE : FALSE;
 }
 
 BOOL LOGFILE::Write( const char *msg )
@@ -79,9 +79,9 @@ BOOL LOGFILE::Write( const char *msg )
 
         logfile->close();
         delete[] timestamp;
-	    delete[] message;
-	    delete logfile;
-	    return TRUE;
+	delete[] message;
+	delete logfile;
+	return TRUE;
     }
     
     delete logfile;
