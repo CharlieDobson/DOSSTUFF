@@ -74,8 +74,8 @@ BOOL LOGFILE::Write( const char *msg )
         
         sprintf( message, " %s\n", msg );
 
-		logfile->write( timestamp, strlen( timestamp ) );
-		logfile->write( message, strlen( message ) );
+	logfile->write( timestamp, strlen( timestamp ) );
+	logfile->write( message, strlen( message ) );
 
         logfile->close();
         delete[] timestamp;
