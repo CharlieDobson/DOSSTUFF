@@ -1,8 +1,9 @@
-// STRING.H class defintiion file
+// STRING.H class definition file
 
-#if __DMC__ || __SC__ || __RCC__
+#pragma warning( disable : 4091 )
+
 #ifndef MYSTRING_H
-#define MYSTRING_H 1
+#define MYSTRING_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -28,11 +29,19 @@ class STRING
     ~STRING( void );
 
     // accessors and mutators
+    STRING* Set( const char *String );
+    STRING* Set( const STRING *String );
+    STRING Set( const STRING String );
     STRING* set( const char *String );
     STRING* set( const STRING *String );
     STRING set( const STRING String );
+    STRING* Get( void ) const;
     STRING* get( void ) const;
+    char* GetCharString( void ) const;
     char* getcharstring( void ) const;
+    STRING* Concat( const char *String );
+    STRING* Concat( const STRING *String );
+    STRING Concat( const STRING String );
     STRING* concat( const char *String );
     STRING* concat( const STRING *String );
     STRING concat( const STRING String );
@@ -44,6 +53,8 @@ class STRING
     BOOL isequal( const char *String );
     BOOL isequal( const STRING *String );
     BOOL isequal( const STRING String );
+    unsigned int Length( void ) const;
+    unsigned int Count( void ) const;
     unsigned int length( void ) const;
     unsigned int count( void ) const;
 
@@ -57,4 +68,6 @@ class STRING
 };
 
 #endif // end MYSTRING_H
-#endif
+//#endif
+
+#pragma warning( default : 4091 )
