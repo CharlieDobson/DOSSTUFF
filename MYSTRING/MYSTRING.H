@@ -58,13 +58,23 @@ class STRING
     unsigned int length( void ) const;
     unsigned int count( void ) const;
 
-  protected:
+    // operator overloads
+    STRING& operator=( const STRING& String );
     STRING* operator=( const STRING *String );
     STRING* operator=( const char *String );
+    STRING operator=( const STRING String );
+    STRING& operator+( const STRING& String );
     STRING* operator+( const STRING *String );
     STRING* operator+( const char *String );
+    STRING operator+( const STRING String );
+    BOOL operator==( const STRING& String );
     BOOL operator==( const STRING *String );
     BOOL operator==( const char *String );
+    BOOL operator==( const STRING String );
+    BOOL operator!=( const STRING& String );
+    BOOL operator!=( const STRING *String );
+    BOOL operator!=( const char *String );
+    BOOL operator!=( const STRING String );
 };
 
 #endif // end MYSTRING_H

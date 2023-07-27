@@ -43,7 +43,7 @@ STRING* STRING::Set( const STRING *String )
         _string = (char*)realloc( _string, String->length() + 1 );
 
     if ( _string != NULL )
-        strcpy( _string, String->getcharstring() );
+        strcpy( _string, (char*)String );
     return (STRING*)_string;
 }
 
@@ -55,7 +55,7 @@ STRING STRING::Set( const STRING String )
         _string = (char*)realloc( _string, String.length() + 1 );
 
     if ( _string != NULL )
-        strcpy( _string, String.getcharstring() );
+        strcpy( _string, String.GetCharString() );
     return (STRING)_string;
 }
 
@@ -112,7 +112,7 @@ STRING* STRING::Concat( const STRING *String )
 
     _string = (char*)realloc( _string, strlen( _string ) + String->length() + 1 );
     if ( _string != NULL )
-        strcat( _string, String->getcharstring() );
+        strcat( _string, (char*)String );
     return (STRING*)_string;
 }
 
@@ -123,10 +123,10 @@ STRING STRING::Concat( const STRING String )
 
     _string = (char*)realloc( _string, strlen( _string ) + String.length() + 1 );
     if ( _string != NULL )
-        strcat( _string, String.getcharstring() );
+        strcat( _string, String.GetCharString() );
     return (STRING)_string;
 }
- 
+
 STRING* STRING::concat( const char *String )
 {
 	return Concat( String );
@@ -149,7 +149,7 @@ BOOL STRING::IsEqual( const char *String )
 
 BOOL STRING::IsEqual( const STRING *String )
 {
-    return strcmp( _string, String->getcharstring() ) == 0 ? TRUE : FALSE;
+    return strcmp( _string, (char*)String ) == 0 ? TRUE : FALSE;
 }
 
 BOOL STRING::IsEqual( const STRING String )
@@ -192,14 +192,29 @@ unsigned int STRING::count( void ) const
     return Length();
 }
 
+STRING& STRING::operator=( const STRING& String )
+{
+    return Set( String );
+}
+
 STRING* STRING::operator=( const STRING *String )
 {
-    return set( String );
+    return Set( String );
 }
 
 STRING* STRING::operator=( const char *String )
 {
-    return set( String );
+    return Set( String );
+}
+
+STRING STRING::operator=( const STRING String )
+{
+    return Set( String );
+}
+
+STRING& STRING::operator+( const STRING& String )
+{
+    return Concat( String );
 }
 
 STRING* STRING::operator+( const STRING *String )
@@ -212,6 +227,11 @@ STRING* STRING::operator+( const char *String )
     return concat( String );
 }
 
+STRING STRING::operator+( const STRING String )
+{
+    return concat( String );
+}
+
 BOOL STRING::operator==( const STRING *String )
 {
     return IsEqual( String );
@@ -220,4 +240,34 @@ BOOL STRING::operator==( const STRING *String )
 BOOL STRING::operator==( const char *String )
 {
     return IsEqual( String );
+}
+
+BOOL STRING::operator==( const STRING String )
+{
+    return IsEqual( String );
+}
+
+BOOL STRING::operator==( const STRING& String )
+{
+    return IsEqual( String );
+}
+
+BOOL STRING::operator!=( const STRING *String )
+{
+    return !IsEqual( String );
+}
+
+BOOL STRING::operator!=( const char *String )
+{
+    return !IsEqual( String );
+}
+
+BOOL STRING::operator!=( const STRING String )
+{
+    return !IsEqual( String );
+}
+
+BOOL STRING::operator!=( const STRING& String )
+{
+    return !IsEqual( String );
 }
