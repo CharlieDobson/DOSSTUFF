@@ -1,18 +1,17 @@
 // dosforms.cpp : class implementation file
 
 #include "dosforms.hpp"
-#pragma warning( disable: 4018 ) // don't show warning about mismatched data types
 
+#ifdef __SC__
 DOSForms::DOSForms( void )
 {
 	if ( dosforms_inited ) {
 		return;
 	}
 
-	OldDisplayMode = disp_getmode();
-	OldDisplayAttributes = disp_getattr();
+	oldDisplayMode = disp_getmode();
 
-    if ( OldDisplayMode != 3 || OldDisplayMode != 7 ) {
+    if ( oldDisplayMode != 3 || oldDisplayMode != 7 ) {
         disp_setmode( 3 );
     }
 
@@ -20,19 +19,22 @@ DOSForms::DOSForms( void )
 		disp_open();
 	}
 
+    numTextCols = (short)disp_numcols;
+    numTextRows = (short)disp_numrows;
+	oldDisplayAttributes = disp_getattr();
 	isMouseEnabled = msm_init();
     formColor = __DARKGRAY;
     titleColor = 0;
     statusBarColor = 0;
-    ScreenBuffer = new unsigned short[80 * 25];
-    titleText = new char[TITLE_MAX];
-    statusBarText = new char[STATUSBAR_MAX];
+    screenBuffer = new unsigned short[80 * 25];
+    titleText = new char[_MAX_DOSFORMS_TITLE + 1];
+    statusBarText = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    titleText[0] = NULL;
+    statusBarText[0] = NULL;
     screenBufferUsed = FALSE;
     dosforms_inited = TRUE;
 
-    titleText[0] = NULL;
-    statusBarText[0] = NULL;
-    memset( ScreenBuffer, '\0', sizeof( ScreenBuffer ) );
+    memset( screenBuffer, '\0', 80 * 25 );
 }
 
 DOSForms::DOSForms( const unsigned int FormColor )
@@ -41,10 +43,9 @@ DOSForms::DOSForms( const unsigned int FormColor )
 		return;
 	}
 
-	OldDisplayMode = disp_getmode();
-	OldDisplayAttributes = disp_getattr();
+	oldDisplayMode = disp_getmode();
 
-    if ( OldDisplayMode != 3 || OldDisplayMode != 7 ) {
+    if ( oldDisplayMode != 3 || oldDisplayMode != 7 ) {
         disp_setmode( 3 );
     }
 
@@ -52,31 +53,33 @@ DOSForms::DOSForms( const unsigned int FormColor )
 		disp_open();
 	}
 
+    numTextCols = (short)disp_numcols;
+    numTextRows = (short)disp_numrows;
+	oldDisplayAttributes = disp_getattr();
 	isMouseEnabled = msm_init();
     formColor = FormColor;
     titleColor = 0;
     statusBarColor = 0;
-    ScreenBuffer = new unsigned short[80 * 25];
-    titleText = new char[TITLE_MAX];
-    statusBarText = new char[STATUSBAR_MAX];
+    screenBuffer = new unsigned short[80 * 25];
+    titleText = new char[_MAX_DOSFORMS_TITLE + 1];
+    statusBarText = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    titleText[0] = NULL;
+    statusBarText[0] = NULL;
     screenBufferUsed = FALSE;
     dosforms_inited = TRUE;
 
-    titleText[0] = NULL;
-    statusBarText[0] = NULL;
-    memset( ScreenBuffer, '\0', sizeof( ScreenBuffer ) );
+    memset( screenBuffer, '\0', 80 * 25 );
 }
 
-DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor, const char *TitleText )
+DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor, const char *szTitleText )
 {
 	if ( dosforms_inited ) {
 		return;
 	}
 
-	OldDisplayMode = disp_getmode();
-	OldDisplayAttributes = disp_getattr();
+	oldDisplayMode = disp_getmode();
 
-    if ( OldDisplayMode != 3 || OldDisplayMode != 7 ) {
+    if ( oldDisplayMode != 3 || oldDisplayMode != 7 ) {
         disp_setmode( 3 );
     }
 
@@ -84,32 +87,34 @@ DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor,
 		disp_open();
 	}
 
+    numTextCols = (short)disp_numcols;
+    numTextRows = (short)disp_numrows;
+	oldDisplayAttributes = disp_getattr();
 	isMouseEnabled = msm_init();
     formColor = FormColor;
     titleColor = TitleColor;
     statusBarColor = 0;
-    ScreenBuffer = new unsigned short[80 * 25];
-    titleText = new char[TITLE_MAX];
-    statusBarText = new char[STATUSBAR_MAX];
-    screenBufferUsed = FALSE;
-
-    SetTitleText( TitleText );
+    screenBuffer = new unsigned short[80 * 25];
+    titleText = new char[_MAX_DOSFORMS_TITLE + 1];
+    statusBarText = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    titleText[0] = NULL;
     statusBarText[0] = NULL;
-    memset( ScreenBuffer, '\0', sizeof( ScreenBuffer ) );
+    screenBufferUsed = FALSE;
+    TitleText( szTitleText );
+    memset( screenBuffer, '\0', 80 * 25 );
 
     dosforms_inited = TRUE;
 }
 
-DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor, const char *TitleText, const unsigned int StatusBarColor, const char *StatusBarText )
+DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor, const char *szTitleText, const unsigned int StatusBarColor, const char *szStatusBarText )
 {
 	if ( dosforms_inited ) {
 		return;
 	}
 
-	OldDisplayMode = disp_getmode();
-	OldDisplayAttributes = disp_getattr();
+	oldDisplayMode = disp_getmode();
 
-    if ( OldDisplayMode != 3 || OldDisplayMode != 7 ) {
+    if ( oldDisplayMode != 3 || oldDisplayMode != 7 ) {
         disp_setmode( 3 );
     }
 
@@ -117,20 +122,22 @@ DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor,
 		disp_open();
 	}
 
+    numTextCols = (short)disp_numcols;
+    numTextRows = (short)disp_numrows;
+	oldDisplayAttributes = disp_getattr();
 	isMouseEnabled = msm_init();
     formColor = FormColor;
     titleColor = TitleColor;
     statusBarColor = StatusBarColor;
-    ScreenBuffer = new unsigned short[80 * 25];
-    titleText = new char[TITLE_MAX];
+    screenBuffer = new unsigned short[80 * 25];
+    titleText = new char[_MAX_DOSFORMS_TITLE + 1];
+    statusBarText = new char[_MAX_DOSFORMS_STATUSBAR + 1];
     titleText[0] = NULL;
-    statusBarText = new char[STATUSBAR_MAX];
     statusBarText[0] = NULL;
     screenBufferUsed = FALSE;
-
-    SetTitleText( TitleText );
-    SetStatusBarText( StatusBarText );
-    memset( ScreenBuffer, '\0', sizeof( ScreenBuffer ) );
+    TitleText( szTitleText );
+    StatusBarText( szStatusBarText );
+    memset( screenBuffer, '\0', 80 * 25 );
 
     dosforms_inited = TRUE;
 }
@@ -142,21 +149,21 @@ DOSForms::~DOSForms( void )
 	}
 
     if ( disp_inited != 0 ) {
-        disp_setattr( OldDisplayAttributes );
+        disp_setattr( oldDisplayAttributes );
         disp_move( 0, 0 );
         disp_eeop();
         disp_close();
-        disp_setmode( OldDisplayMode );
+        disp_setmode( oldDisplayMode );
     }
 
-    dosforms_inited = FALSE;
-
-    delete[] ScreenBuffer;
     delete[] titleText;
     delete[] statusBarText;
+    delete[] screenBuffer;
+
+    dosforms_inited = FALSE;
 }
 
-BOOL DOSForms::SetTitleColor( const unsigned int Color )
+BOOL DOSForms::TitleColor( const unsigned int Color )
 {
     if ( Color != NULL ) {
         titleColor = Color;
@@ -182,17 +189,17 @@ BOOL DOSForms::SetTitleColor( const unsigned int Color )
     return FALSE;
 }
 
-BOOL DOSForms::SetTitleText( const char *Text )
+BOOL DOSForms::TitleText( const char *Text )
 {
-    if ( Text != NULL && strlen( Text ) < TITLE_MAX ) {
-        strncpy( titleText, Text, TITLE_MAX );
+    if ( Text != NULL && strlen( Text ) < _MAX_DOSFORMS_TITLE ) {
+        strncpy( titleText, Text, _MAX_DOSFORMS_TITLE );
 
         if ( (BOOL)disp_inited && dosforms_inited ) {
             if ( isMouseEnabled ) {
                 msm_hidecursor();
             }
 
-            disp_move( 0, GetCenterScreen( titleText ) );
+            disp_move( 0, CenterScreen( titleText ) );
             disp_setattr( titleColor );
             disp_puts( titleText );
             disp_setattr( formColor );
@@ -222,7 +229,7 @@ BOOL DOSForms::RemoveTitleBar( void )
         if ( isMouseEnabled ) {
             disp_setattr( titleColor );
             disp_move( 0, 0 );
-            disp_puts( "[]" );
+            disp_puts( "[Ä]" ); // ALT+0196
             disp_setattr( formColor );
 
             msm_showcursor();
@@ -232,21 +239,21 @@ BOOL DOSForms::RemoveTitleBar( void )
     return (BOOL)disp_inited;
 }
 
-BOOL DOSForms::SetStatusBarText( const char* Text )
+BOOL DOSForms::StatusBarText( const char* Text )
 {
-    if ( Text != NULL && strlen( Text ) < STATUSBAR_MAX ) {
-        strncpy( statusBarText, Text, STATUSBAR_MAX );
+    if ( Text != NULL && strlen( Text ) < _MAX_DOSFORMS_STATUSBAR ) {
+        strncpy( statusBarText, Text, _MAX_DOSFORMS_STATUSBAR );
 
         if ( (BOOL)disp_inited && dosforms_inited ) {
             if ( isMouseEnabled ) {
                 msm_hidecursor();
             }
 
-            disp_move( disp_numrows - 1, 0 );
+            disp_move( numTextRows - 1, 0 );
             disp_flush();
             disp_setattr( statusBarColor );
             disp_eeol();
-            disp_move( disp_numrows - 1, 1 );
+            disp_move( numTextRows - 1, 1 );
             disp_puts( statusBarText );
             disp_setattr( formColor );
 
@@ -261,7 +268,7 @@ BOOL DOSForms::SetStatusBarText( const char* Text )
     return FALSE;
 }
 
-BOOL DOSForms::SetStatusBarColor( const unsigned int Color )
+BOOL DOSForms::StatusBarColor( const unsigned int Color )
 {
     if ( Color != NULL ) {
         statusBarColor = Color;
@@ -271,7 +278,7 @@ BOOL DOSForms::SetStatusBarColor( const unsigned int Color )
                 msm_hidecursor();
             }
 
-            disp_move( disp_numrows - 1, 0 );
+            disp_move( numTextRows - 1, 0 );
             disp_flush();
             disp_setattr( statusBarColor );
             disp_eeol();
@@ -296,7 +303,7 @@ BOOL DOSForms::RemoveStatusBar( void )
         }
 
         disp_setattr( formColor );
-        disp_move( disp_numrows - 1, 0 );
+        disp_move( numTextRows - 1, 0 );
         disp_eeol();
 
         if ( isMouseEnabled ) {
@@ -342,11 +349,11 @@ BOOL DOSForms::OpenForm( void )
     }
 
     if ( titleColor != 0 || titleColor != NULL ) {
-        SetTitleColor( titleColor );
+        TitleColor( titleColor );
     }
 
     if ( titleText != NULL ) {
-        SetTitleText( titleText );
+        TitleText( titleText );
     }
 
     if ( isMouseEnabled ) {
@@ -354,14 +361,14 @@ BOOL DOSForms::OpenForm( void )
         disp_setattr( titleColor );
         disp_move( 0, 0 );
         //disp_puts( "[]" );
-        disp_puts( "[]" );
+        disp_puts( "[Ä]" ); // ALT+0196
         msm_showcursor();
     }
 
     disp_setattr( formColor );
 
     if ( statusBarColor != 0 || statusBarColor != NULL ) {
-        SetStatusBarText( statusBarText );
+        StatusBarText( statusBarText );
     }
 
     return (BOOL)disp_inited;
@@ -373,25 +380,25 @@ BOOL DOSForms::DrawButton( const Window window )
         return FALSE;
     }
 
-    if ( window.GetTop() != window.GetBottom() ) {
-        disp_fillbox( __BLACK * 256 + ' ', window.GetTop() + 1, window.GetLeft() + 1, window.GetBottom() + 1, window.GetRight() + 1 );
+    if ( window.Top() != window.Bottom() ) {
+        disp_fillbox( __BLACK * 256 + ' ', window.Top() + 1, window.Left() + 1, window.Bottom() + 1, window.Right() + 1 );
     }
-    disp_fillbox( window.GetColor() * 256 + ' ', window.GetTop(), window.GetLeft(), window.GetBottom(), window.GetRight() );
+    disp_fillbox( window.Color() * 256 + ' ', window.Top(), window.Left(), window.Bottom(), window.Right() );
 
-    if ( window.GetLabel() != NULL ) {
-        if ( window.GetTop() != window.GetBottom() ) {
-            // center formula: ( strlen( Text ) + disp_numcols ) / 2 - strlen( Text )
-            unsigned int row = ( window.GetTop() + window.GetBottom() ) / 2;
-            unsigned int col = ( strlen( window.GetLabel() ) + window.GetLeft() + window.GetRight() ) / 2 - strlen( window.GetLabel() ) + 1;
+    if ( window.Label() != NULL ) {
+        if ( window.Top() != window.Bottom() ) {
+            // center formula: ( strlen( Text ) + numTextCols ) / 2 - strlen( Text )
+            unsigned int row = ( window.Top() + window.Bottom() ) / 2;
+            unsigned int col = ( strlen( window.Label() ) + window.Left() + window.Right() ) / 2 - strlen( window.Label() ) + 1;
             disp_move( row, col );
-            disp_setattr( window.GetColor() );
-            disp_puts( window.GetLabel() );
+            disp_setattr( window.Color() );
+            disp_puts( window.Label() );
         }
         else {
-            unsigned int col = ( strlen( window.GetLabel() ) + window.GetLeft() + window.GetRight() ) / 2 - strlen( window.GetLabel() ) + 1;
-            disp_move( window.GetTop(), col );
-            disp_setattr( window.GetColor() );
-            disp_puts( window.GetLabel() );
+            unsigned int col = ( strlen( window.Label() ) + window.Left() + window.Right() ) / 2 - strlen( window.Label() ) + 1;
+            disp_move( window.Top(), col );
+            disp_setattr( window.Color() );
+            disp_puts( window.Label() );
         }
 
         disp_setattr( formColor );
@@ -415,26 +422,26 @@ BOOL DOSForms::OpenPopupWindow( const Window window )
         msm_hidecursor();
     }
 
-    disp_peekbox( ScreenBuffer, 3, 5, 22, 75 ); // save current contents to buffer
+    disp_peekbox( screenBuffer, 3, 5, 22, 75 ); // save current contents to buffer
     disp_fillbox( __BLACK * 256 + ' ', 4, 6, 22, 75 ); // draw drop shadow
-    disp_box( 1, window.GetColor(), 3, 5, 21, 74 ); //draw popup
-    disp_fillbox( window.GetColor() * 256 + ' ', 4, 6, 20, 73 ); // fill popup box
+    disp_box( 1, window.Color(), 3, 5, 21, 74 ); //draw popup
+    disp_fillbox( window.Color() * 256 + ' ', 4, 6, 20, 73 ); // fill popup box
 
     // set title if specified
-    if ( window.GetTitle() != NULL ) {
-        disp_setattr( window.GetColor() );
+    if ( window.Title() != NULL ) {
+        disp_setattr( window.Color() );
 
-        if ( window.GetTitleJustify() == 'R' ) {
-            disp_move( 3, 74 - strlen( window.GetTitle() ) - 3 );
+        if ( window.TitleJustify() == 'R' ) {
+            disp_move( 3, 74 - strlen( window.Title() ) - 3 );
         }
-        else if ( window.GetTitleJustify() == 'C' ) {
-            disp_move( 3, ( strlen( window.GetTitle() ) + 74 ) / 2 - strlen( window.GetTitle() ) );
+        else if ( window.TitleJustify() == 'C' ) {
+            disp_move( 3, ( strlen( window.Title() ) + 74 ) / 2 - strlen( window.Title() ) );
         }
         else {
             disp_move( 3, 7 );
         }
 
-        disp_printf( " %s ", window.GetTitle() );
+        disp_printf( " %s ", window.Title() );
 
         if ( formColor != NULL ) {
             disp_setattr( formColor );
@@ -463,8 +470,8 @@ BOOL DOSForms::ClosePopupWindow( void )
         msm_hidecursor();
     }
 
-    disp_pokebox( ScreenBuffer, 3, 5, 22, 75 );
-    memset( ScreenBuffer, '\0', sizeof( ScreenBuffer ) );
+    disp_pokebox( screenBuffer, 3, 5, 22, 75 );
+    memset( screenBuffer, '\0', sizeof( screenBuffer ) );
 
     if ( isMouseEnabled ) {
         msm_showcursor();
@@ -517,63 +524,63 @@ BYTE DOSForms::MessageBox( const Window window, const BYTE Buttons, unsigned int
 
         unsigned short *scrnBuffer = new unsigned short[50*10];
 
-        disp_peekbox( scrnBuffer, window.GetTop(), window.GetLeft(), window.GetTop() + 7 + 1, window.GetLeft() + 44 + 1 ); // save current contents to buffer
-        disp_fillbox( __BLACK * 256 + ' ', window.GetTop() + 1, window.GetLeft() + 1, window.GetTop() + 7, window.GetLeft() + 44 + 1 ); // draw drop shadow
-        disp_box( window.GetBorderStyle(), window.GetColor(), window.GetTop(), window.GetLeft(), window.GetTop() + 6, window.GetLeft() + 44 ); //draw popup
-        disp_fillbox( window.GetColor() * 256 + ' ', window.GetTop() + 1, window.GetLeft() + 1, window.GetTop() + 5, window.GetLeft() + 43 ); // fill popup box
+        disp_peekbox( scrnBuffer, window.Top(), window.Left(), window.Top() + 7 + 1, window.Left() + 44 + 1 ); // save current contents to buffer
+        disp_fillbox( __BLACK * 256 + ' ', window.Top() + 1, window.Left() + 1, window.Top() + 7, window.Left() + 44 + 1 ); // draw drop shadow
+        disp_box( window.BorderStyle(), window.Color(), window.Top(), window.Left(), window.Top() + 6, window.Left() + 44 ); //draw popup
+        disp_fillbox( window.Color() * 256 + ' ', window.Top() + 1, window.Left() + 1, window.Top() + 5, window.Left() + 43 ); // fill popup box
 
-        if ( window.GetLabel() != NULL ) {
-            disp_setattr( window.GetColor() );
-            int centerColumn = ( strlen( window.GetLabel() ) + 44 ) / 2 - strlen( window.GetLabel() );
-            disp_move( window.GetTop() + 2, window.GetLeft() + centerColumn );
-            disp_printf( "%s", window.GetLabel() );
+        if ( window.Label() != NULL ) {
+            disp_setattr( window.Color() );
+            int centerColumn = ( strlen( window.Label() ) + 44 ) / 2 - strlen( window.Label() );
+            disp_move( window.Top() + 2, window.Left() + centerColumn );
+            disp_printf( "%s", window.Label() );
         }
 
         if ( ButtonColor == NULL ) {
-            ButtonColor = YELLOW_ON_GREEN;
+            ButtonColor = __YELLOW_ON_GREEN;
         }
 
         if ( Buttons == BTN_OK || Buttons == NULL ) {
             //int center = ( ( 8 + 44 ) / 2 - 8 ) + 1;
-            disp_box( 5, ButtonColor, window.GetTop() + 4, window.GetLeft() + 17, window.GetTop() + 4, window.GetLeft() + 25 );
+            disp_box( 5, ButtonColor, window.Top() + 4, window.Left() + 17, window.Top() + 4, window.Left() + 25 );
         }
         else {
-            disp_box( 5, ButtonColor, window.GetTop() + 4, window.GetLeft() + 7, window.GetTop() + 4, window.GetLeft() + 15 );
-            disp_box( 5, ButtonColor, window.GetTop() + 4, window.GetLeft() + 27, window.GetTop() + 4, window.GetLeft() + 35 );
+            disp_box( 5, ButtonColor, window.Top() + 4, window.Left() + 7, window.Top() + 4, window.Left() + 15 );
+            disp_box( 5, ButtonColor, window.Top() + 4, window.Left() + 27, window.Top() + 4, window.Left() + 35 );
         }
 
         disp_setattr( ButtonColor );
 
         if ( Buttons == BTN_OKCANCEL ) {
-            disp_move( window.GetTop() + 4, window.GetLeft() + 10 );
+            disp_move( window.Top() + 4, window.Left() + 10 );
             disp_puts( buttons[0] );
-            disp_move( window.GetTop() + 4, window.GetLeft() + 28 );
+            disp_move( window.Top() + 4, window.Left() + 28 );
             disp_puts( buttons[1] );
         }
         else if ( Buttons == BTN_YESNO ) {
-            disp_move( window.GetTop() + 4, window.GetLeft() + 10 );
+            disp_move( window.Top() + 4, window.Left() + 10 );
             disp_puts( buttons[0] );
-            disp_move( window.GetTop() + 4, window.GetLeft() + 30 );
+            disp_move( window.Top() + 4, window.Left() + 30 );
             disp_puts( buttons[1] );
         }
         else if ( Buttons == BTN_NEXTBACK ) {
-            disp_move( window.GetTop() + 4, window.GetLeft() + 9 );
+            disp_move( window.Top() + 4, window.Left() + 9 );
             disp_puts( buttons[0] );
-            disp_move( window.GetTop() + 4, window.GetLeft() + 29 );
+            disp_move( window.Top() + 4, window.Left() + 29 );
             disp_puts( buttons[1] );
         }
         else if ( Buttons == BTN_INSTALLCANCEL ) {
-            disp_move( window.GetTop() + 4, window.GetLeft() + 8 );
+            disp_move( window.Top() + 4, window.Left() + 8 );
             disp_puts( buttons[0] );
-            disp_move( window.GetTop() + 4, window.GetLeft() + 28 );
+            disp_move( window.Top() + 4, window.Left() + 28 );
             disp_puts( buttons[1] );
         }
         else {
-            disp_move( window.GetTop() + 4, window.GetLeft() + 20 );
+            disp_move( window.Top() + 4, window.Left() + 20 );
             disp_puts( buttons[0] );
         }
 
-        disp_setattr( window.GetColor() );
+        disp_setattr( window.Color() );
 
         if ( isMouseEnabled ) {
             msm_showcursor();
@@ -588,18 +595,18 @@ BYTE DOSForms::MessageBox( const Window window, const BYTE Buttons, unsigned int
 
         	    if ( (mouse_status & LEFT_BUTTON) && (mouse_status != old_mouse_status) ) {
         	        // multiply button positions by 8 to get mouse location
-           	        if ( mouse_y == ( ( window.GetTop() + 4 ) * 8 ) ) {
+           	        if ( mouse_y == ( ( window.Top() + 4 ) * 8 ) ) {
            	            if ( Buttons == BTN_OK || Buttons == NULL ) {
-           	                if ( mouse_x >= ( ( window.GetLeft() + 17 ) * 8 ) && mouse_x <= ( ( window.GetLeft() + 25 ) * 8 ) ) {
+           	                if ( mouse_x >= ( ( window.Left() + 17 ) * 8 ) && mouse_x <= ( ( window.Left() + 25 ) * 8 ) ) {
            	                    break;
            	                }
            	            }
            	            else {
-           	                if ( mouse_x >= ( ( window.GetLeft() + 7 ) * 8 ) && mouse_x <= ( ( window.GetLeft() + 15 ) * 8 ) ) {
+           	                if ( mouse_x >= ( ( window.Left() + 7 ) * 8 ) && mouse_x <= ( ( window.Left() + 15 ) * 8 ) ) {
            	                    choice = 1;
            	                    break;
            	                }
-       	                    if ( mouse_x >= ( ( window.GetLeft() + 27 ) * 8 ) && mouse_x <= ( ( window.GetLeft() + 35 ) * 8 ) ) {
+       	                    if ( mouse_x >= ( ( window.Left() + 27 ) * 8 ) && mouse_x <= ( ( window.Left() + 35 ) * 8 ) ) {
        	                        choice = 2;
            	                    break;
                 	        }
@@ -669,8 +676,8 @@ BYTE DOSForms::MessageBox( const Window window, const BYTE Buttons, unsigned int
             msm_hidecursor();
         }
 
-        disp_pokebox( scrnBuffer, window.GetTop(), window.GetLeft(), window.GetTop() + 7 + 1, window.GetLeft() + 44 + 1 );
-        delete scrnBuffer;
+        disp_pokebox( scrnBuffer, window.Top(), window.Left(), window.Top() + 7 + 1, window.Left() + 44 + 1 );
+        delete[] scrnBuffer;
 
         if ( isMouseEnabled ) {
             msm_showcursor();
@@ -708,7 +715,7 @@ BOOL DOSForms::ClearRow( const unsigned int row )
             msm_hidecursor();
         }
 
-        for ( unsigned int i = 0; i < disp_numcols; ++i ) {
+        for ( unsigned int i = 0; i < numTextCols; ++i ) {
             disp_move( row, i );
             disp_putc( ' ' );
         }
@@ -721,11 +728,381 @@ BOOL DOSForms::ClearRow( const unsigned int row )
     return (BOOL)disp_inited;
 }
 
-// centers text
-unsigned int DOSForms::GetCenterScreen( const char *Text ) const
+#else // __SC__
+
+///
+/// ***********************************
+/// Microsoft / OpenWatCom compatible
+/// ***********************************
+///
+
+DOSForms::DOSForms( void )
 {
-    return ( strlen( Text ) + disp_numcols ) / 2 - strlen( Text );
+	struct _videoconfig videoconfig;
+	_getvideoconfig( &videoconfig );
+	numTextCols = videoconfig.numtextcols;
+	numTextRows = videoconfig.numtextrows;
+	oldDisplayMode = videoconfig.mode;
+	oldTextDisplay = _gettextcolor();
+	oldBackgroundDisplay = _getbkcolor();
+
+	if ( oldDisplayMode != _TEXTBW80 || oldDisplayMode != _TEXTC80 ) {
+		if ( _setvideomode( _TEXTC80 ) != 0 ) {
+			dispInited = TRUE;
+		}
+		else {
+			dispInited = FALSE;
+		}
+	}
+	else {
+		dispInited = TRUE;
+	}
+
+	formTextColor = __BLUE;
+	formBackgroundColor = __GRAY;
+	titleTextColor = 0;
+	titleBackgroundColor = 0L;
+	statusBarTextColor = 0;
+	statusBarBackgroundColor = 0L;
+	screenBuffer = new unsigned short[80 * 25];
+	memset( &screenBuffer, '\0', 80 * 25 );
+	titleText = new char[_MAX_DOSFORMS_TITLE + 1];
+	statusBarText = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    titleText[0] = NULL;
+    statusBarText[0] = NULL;
+
+    screenBufferUsed = FALSE;
+
+    isMouseEnabled = mouse.IsMouseEnabled();
 }
 
+DOSForms::DOSForms( const unsigned int FormTextColor, const unsigned int FormBackgroundColor )
+{
+	struct _videoconfig videoconfig;
+	_getvideoconfig( &videoconfig );
+	numTextCols = videoconfig.numtextcols;
+	numTextRows = videoconfig.numtextrows;
+	oldDisplayMode = videoconfig.mode;
+	oldTextDisplay = _gettextcolor();
+	oldBackgroundDisplay = _getbkcolor();
 
-#pragma warning( default: 4018 )
+	if ( oldDisplayMode != _TEXTBW80 || oldDisplayMode != _TEXTC80 ) {
+		if ( _setvideomode( _TEXTC80 ) != 0 ) {
+			dispInited = TRUE;
+		}
+		else {
+			dispInited = FALSE;
+		}
+	}
+	else {
+		dispInited = TRUE;
+	}
+
+	formTextColor = FormTextColor;
+	formBackgroundColor = FormBackgroundColor;
+	titleTextColor = 0;
+	titleBackgroundColor = 0L;
+	statusBarTextColor = 0;
+	statusBarBackgroundColor = 0L;
+	screenBuffer = new unsigned short[80 * 25];
+	memset( &screenBuffer, '\0', 80 * 25 );
+	titleText = new char[_MAX_DOSFORMS_TITLE + 1];
+	statusBarText = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    titleText[0] = NULL;
+    statusBarText[0] = NULL;
+    screenBufferUsed = FALSE;
+
+    isMouseEnabled = mouse.IsMouseEnabled();
+}
+
+DOSForms::DOSForms( const unsigned int FormTextColor, const unsigned int FormBackgroundColor, const unsigned int TitleTextColor, const unsigned int TitleBackgroundColor, const char *TitleText )
+{
+	struct _videoconfig videoconfig;
+	_getvideoconfig( &videoconfig );
+	numTextCols = videoconfig.numtextcols;
+	numTextRows = videoconfig.numtextrows;
+	oldDisplayMode = videoconfig.mode;
+	oldTextDisplay = _gettextcolor();
+	oldBackgroundDisplay = _getbkcolor();
+
+	if ( oldDisplayMode != _TEXTBW80 || oldDisplayMode != _TEXTC80 ) {
+		if ( _setvideomode( _TEXTC80 ) != 0 ) {
+			dispInited = TRUE;
+		}
+		else {
+			dispInited = FALSE;
+		}
+	}
+	else {
+		dispInited = TRUE;
+	}
+
+	formTextColor = FormTextColor;
+	formBackgroundColor = FormBackgroundColor;
+	titleTextColor = TitleTextColor;
+	titleBackgroundColor = TitleBackgroundColor;
+	statusBarTextColor = 0;
+	statusBarBackgroundColor = 0L;
+	screenBuffer = new unsigned short[80 * 25];
+	memset( &screenBuffer, '\0', 80 * 25 );
+	titleText = new char[_MAX_DOSFORMS_TITLE + 1];
+	statusBarText = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+	strncpy( titleText, TitleText, _MAX_DOSFORMS_TITLE );
+    statusBarText[0] = NULL;
+    screenBufferUsed = FALSE;
+
+    isMouseEnabled = mouse.IsMouseEnabled();
+}
+
+DOSForms::~DOSForms( void )
+{
+	delete[] screenBuffer;
+	delete[] titleText;
+	delete[] statusBarText;
+	_setvideomode( oldDisplayMode );
+	_settextcolor( oldTextDisplay );
+	_setbkcolor( oldBackgroundDisplay );
+}
+
+BOOL DOSForms::TitleTextColor( const unsigned int Color )
+{
+	if ( Color == NULL ) {
+		return FALSE;
+	}
+
+    titleTextColor = Color;
+
+	if ( dispInited ) {
+    	if ( isMouseEnabled ) {
+        	mouse.HideMouse();
+    	}
+
+		_settextcolor( titleTextColor );
+		_setbkcolor( titleBackgroundColor );
+		_settextposition( 1, 1 );
+		_outmem( " ", numTextCols );
+
+		if ( titleText[0] != NULL ) {
+			TitleText( titleText );
+		}
+
+	    _settextcolor( formTextColor );
+    	_setbkcolor( formBackgroundColor );
+
+    	if ( isMouseEnabled ) {
+    		mouse.ShowMouse();
+    	}
+    }
+
+    return TRUE;
+}
+
+BOOL DOSForms::TitleBackgroundColor( const unsigned long Color )
+{
+	if ( Color == NULL ) {
+		return FALSE;
+	}
+
+    titleBackgroundColor = Color;
+
+	if ( dispInited ) {
+    	if ( isMouseEnabled ) {
+        	mouse.HideMouse();
+    	}
+
+		_settextcolor( titleTextColor );
+		_setbkcolor( titleBackgroundColor );
+		_settextposition( 1, 1 );
+		_outmem( " ", numTextCols );
+
+		if ( titleText[0] != NULL ) {
+			TitleText( titleText );
+		}
+
+	    _settextcolor( formTextColor );
+    	_setbkcolor( formBackgroundColor );
+
+    	if ( isMouseEnabled ) {
+    		mouse.ShowMouse();
+    	}
+    }
+
+    return TRUE;
+}
+
+BOOL DOSForms::StatusBarTextColor( const unsigned int Color )
+{
+	if ( Color == NULL ) {
+		return FALSE;
+	}
+
+    statusBarTextColor = Color;
+
+	if ( dispInited ) {
+    	if ( isMouseEnabled ) {
+        	mouse.HideMouse();
+    	}
+
+		_settextcolor( statusBarTextColor );
+		_setbkcolor( statusBarBackgroundColor );
+		_settextposition( numTextRows, 1 );
+		_outmem( " ", numTextCols );
+
+		if ( statusBarText[0] != NULL ) {
+			StatusBarText( statusBarText );
+		}
+
+	    _settextcolor( formTextColor );
+    	_setbkcolor( formBackgroundColor );
+
+    	if ( isMouseEnabled ) {
+    		mouse.ShowMouse();
+    	}
+    }
+
+    return TRUE;
+}
+
+BOOL DOSForms::StatusBarBackgroundColor( const unsigned long Color )
+{
+	if ( Color == NULL ) {
+		return FALSE;
+	}
+
+    statusBarBackgroundColor = Color;
+
+	if ( dispInited ) {
+    	if ( isMouseEnabled ) {
+        	mouse.HideMouse();
+    	}
+
+		_settextcolor( statusBarTextColor );
+		_setbkcolor( statusBarBackgroundColor );
+		_settextposition( numTextRows, 1 );
+		_outmem( " ", numTextCols );
+
+		if ( statusBarText[0] != NULL ) {
+			StatusBarText( statusBarText );
+		}
+
+	    _settextcolor( formTextColor );
+    	_setbkcolor( formBackgroundColor );
+
+    	if ( isMouseEnabled ) {
+    		mouse.ShowMouse();
+    	}
+    }
+
+    return TRUE;
+}
+
+BOOL DOSForms::TitleText( const char *Text )
+{
+	if ( Text[0] == NULL ) {
+		return FALSE;
+	}
+
+    strncpy( titleText, Text, _MAX_DOSFORMS_TITLE );
+
+    if ( dispInited ) {
+        if ( isMouseEnabled ) {
+            mouse.HideMouse();
+        }
+
+		_settextposition( 1, CenterScreen( titleText ) );
+		_settextcolor( titleTextColor );
+		_setbkcolor( titleBackgroundColor );
+		_outmem( titleText, strlen( titleText ) );
+		_settextcolor( formTextColor );
+		_setbkcolor( formBackgroundColor );
+
+        if ( isMouseEnabled ) {
+            mouse.ShowMouse();
+        }
+    }
+
+    return TRUE;
+}
+
+BOOL DOSForms::StatusBarText( const char *Text )
+{
+	if ( Text[0] == NULL ) {
+		return FALSE;
+	}
+
+    strncpy( statusBarText, Text, _MAX_DOSFORMS_STATUSBAR );
+
+    if ( dispInited ) {
+        if ( isMouseEnabled ) {
+            mouse.HideMouse();
+        }
+
+		_settextposition( numTextRows, CenterScreen( statusBarText ) );
+		_settextcolor( statusBarTextColor );
+		_setbkcolor( statusBarBackgroundColor );
+		_outmem( statusBarText, strlen( statusBarText ) );
+		_settextcolor( formTextColor );
+		_setbkcolor( formBackgroundColor );
+
+        if ( isMouseEnabled ) {
+            mouse.ShowMouse();
+        }
+    }
+
+    return TRUE;
+}
+
+BOOL DOSForms::OpenForm( void )
+{
+    if ( !dispInited ) {
+        return FALSE;
+    }
+
+    // TODO: check for B&W (mono) display and set colors
+
+    if ( isMouseEnabled ) {
+        mouse.HideMouse();
+    }
+
+	_settextcolor( formTextColor );
+	_setbkcolor( formBackgroundColor );
+	_clearscreen( _GCLEARSCREEN );
+
+    if ( isMouseEnabled ) {
+        mouse.ShowMouse();
+    }
+
+    if ( titleTextColor != 0 || titleBackgroundColor != 0 ) {
+        TitleTextColor( titleTextColor );
+        TitleBackgroundColor( titleBackgroundColor );
+    }
+
+    if ( titleText[0] != NULL ) {
+        TitleText( titleText );
+    }
+
+    if ( isMouseEnabled ) {
+        mouse.HideMouse();
+        _settextcolor( titleTextColor );
+        _setbkcolor( titleBackgroundColor );
+        _settextposition( 1, 1 );
+        _outmem( "[]", 3 );
+        mouse.ShowMouse();
+    }
+
+    if ( statusBarText[0] != NULL ) {
+        StatusBarText( statusBarText );
+    }
+
+	_settextcolor( formTextColor );
+	_setbkcolor( formBackgroundColor );
+
+    return dispInited;
+}
+
+#endif // __SC__
+
+unsigned int DOSForms::CenterScreen( const char *Text ) const
+{
+	return ( strlen( Text ) + numTextCols ) / 2 - strlen( Text );
+}
