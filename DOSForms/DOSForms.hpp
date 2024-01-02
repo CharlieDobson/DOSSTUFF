@@ -16,7 +16,7 @@
 #include "msmouse.hpp"
 #endif
 #include "window.hpp"
-#include "..\colors.h"
+#include "colors.h"
 
 #ifndef _INC_WINDOWS
 #ifndef BOOL
