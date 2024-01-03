@@ -16,7 +16,7 @@
 #include "msmouse.hpp"
 #endif
 #include "window.hpp"
-#include "colors.h"
+#include "..\colors.h"
 
 #ifndef _INC_WINDOWS
 #ifndef BOOL
@@ -33,9 +33,6 @@ typedef unsigned char	BYTE;
 #endif
 #endif // _INC_WINDOWS
 
-const unsigned short _MAX_DOSFORMS_TITLE = 35;
-const unsigned short _MAX_DOSFORMS_STATUSBAR = 78;
-
 static unsigned int mouse_x = 0, mouse_y = 0;
 
 #ifdef __SC__
@@ -44,7 +41,6 @@ const BYTE BTN_OKCANCEL = 2;
 const BYTE BTN_YESNO = 3;
 const BYTE BTN_NEXTBACK = 4;
 const BYTE BTN_INSTALLCANCEL = 5;
-static BOOL dosforms_inited = FALSE;
 
 class DOSForms
 {
@@ -75,12 +71,12 @@ class DOSForms
     ~DOSForms( void );
 
     // accessors
-    BOOL IsMouseEnabled( void ) const { return isMouseEnabled; }
+    BOOL IsMouseEnabled( void ) const;
     unsigned int FormColor( void ) const { return formColor; }
     unsigned int TitleColor( void ) const { return titleColor; }
     unsigned int StatusBarColor( void ) const { return statusBarColor; }
-    char *TitleText( void ) const { return titleText; }
-    char *StatusBarText( void ) const { return statusBarText; }
+    char *TitleText( void ) const;
+    char *StatusBarText( void ) const;
 
     // mutators
     BOOL TitleColor( const unsigned int Color );
@@ -106,14 +102,14 @@ class DOSForms
 	short numTextRows;
 	BOOL dispInited;
     short oldDisplayMode;
-	unsigned short oldTextDisplay;
-	unsigned long oldBackgroundDisplay;
-	unsigned short formTextColor;
-	unsigned long formBackgroundColor;
-	unsigned short titleTextColor;
-	unsigned long titleBackgroundColor;
-	unsigned short statusBarTextColor;
-	unsigned long statusBarBackgroundColor;
+	short oldTextDisplay;
+	long oldBackgroundDisplay;
+	short formTextColor;
+	long formBackgroundColor;
+	short titleTextColor;
+	long titleBackgroundColor;
+	short statusBarTextColor;
+	long statusBarBackgroundColor;
     unsigned short *screenBuffer;
     char *titleText;
     char *statusBarText;
@@ -128,28 +124,28 @@ class DOSForms
 
   public:
     DOSForms( void );
-    DOSForms( const unsigned int FormTextColor, const unsigned int FormBackgroundColor );
-    DOSForms( const unsigned int FormTextColor, const unsigned int FormBackgroundColor, const unsigned int TitleTextColor, const unsigned int TitleBackgroundColor, const char *TitleText );
+    DOSForms( const short FormTextColor, const long FormBackgroundColor );
+    DOSForms( const short FormTextColor, const long FormBackgroundColor, const short TitleTextColor, const long TitleBackgroundColor, const char *TitleText );
     ~DOSForms( void );
 
 	enum _MB_BUTTONS { BTN_OK = 1, BTN_OKCANCEL, BTN_YESNO, BTN_NEXTBACK, BTN_INSTALLCANCEL } MBButtons;
 
     // accessors
-    BOOL IsMouseEnabled( void ) const { return isMouseEnabled; }
-    unsigned int FormTextColor( void ) const { return formTextColor; }
-    unsigned long FormBackgroundColor( void ) const { return formBackgroundColor; }
-    unsigned int TitleTextColor( void ) const { return titleTextColor; }
-    unsigned long TitleBackgroundColor( void ) const { return titleBackgroundColor; }
-    unsigned int StatusBarTextColor( void ) const { return statusBarTextColor; }
-    unsigned long StatusBarBackgroundColor( void ) const { return statusBarBackgroundColor; }
-    char *TitleText( void ) const { return titleText; }
-    char *StatusBarText( void ) const { return statusBarText; }
+    BOOL IsMouseEnabled( void ) const;
+    short FormTextColor( void ) const;
+    long FormBackgroundColor( void ) const;
+    short TitleTextColor( void ) const;
+    long TitleBackgroundColor( void ) const;
+    short StatusBarTextColor( void ) const;
+    long StatusBarBackgroundColor( void ) const;
+    char *TitleText( void ) const;
+    char *StatusBarText( void ) const;
 
     // mutators
-    BOOL TitleTextColor( const unsigned int Color );
-    BOOL TitleBackgroundColor( const unsigned long Color );
-    BOOL StatusBarTextColor( const unsigned int Color );
-    BOOL StatusBarBackgroundColor( const unsigned long Color );
+    BOOL TitleTextColor( const short Color );
+    BOOL TitleBackgroundColor( const long Color );
+    BOOL StatusBarTextColor( const short Color );
+    BOOL StatusBarBackgroundColor( const long Color );
     BOOL TitleText( const char *Text );
     BOOL StatusBarText( const char *Text );
 
