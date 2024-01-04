@@ -47,6 +47,42 @@
 #define __YELLOW_BLINK              30
 #define __BRIGHTWHITE_BLINK         31
 
+//const unsigned int __BLACK = 0;
+//const unsigned int __BLUE = 1;
+//const unsigned int __GREEN = 2;
+//const unsigned int __CYAN = 3;
+//const unsigned int __RED = 4;
+//const unsigned int __MAGENTA = 5;
+//const unsigned int __BROWN = 6;
+//const unsigned int __WHITE = 7;
+//const unsigned int __GRAY = 8;
+//const unsigned int __LIGHTBLUE = 9;
+//const unsigned int __LIGHTGREEN = 10;
+//const unsigned int __LIGHTCYAN = 11;
+//const unsigned int __LIGHTRED = 12;
+//const unsigned int __LIGHTMAGENTA = 13;
+//const unsigned int __LIGHTYELLOW = 14;
+//const unsigned int __YELLOW = 14;
+//const unsigned int __BRIGHTWHITE = 15;
+
+//const unsigned int __BLACK_BLINK = 16;
+//const unsigned int __BLUE_BLINK = 17;
+//const unsigned int __GREEN_BLINK = 18;
+//const unsigned int __CYAN_BLINK = 19;
+//const unsigned int __RED_BLINK = 20;
+//const unsigned int __MAGENTA_BLINK = 21;
+//const unsigned int __BROWN_BLINK = 22;
+//const unsigned int __WHITE_BLINK = 23;
+//const unsigned int __GRAY_BLINK = 24;
+//const unsigned int __LIGHTBLUE_BLINK = 25;
+//const unsigned int __LIGHTGREEN_BLINK = 26;
+//const unsigned int __LIGHTCYAN_BLINK = 27;
+//const unsigned int __LIGHTRED_BLINK = 28;
+//const unsigned int __LIGHTMAGENTA_BLINK = 29;
+//const unsigned int __LIGHTYELLOW_BLINK = 30;
+//const unsigned int __YELLOW_BLINK = 30;
+//const unsigned int __BRIGHTWHITE_BLINK = 31;
+
 #ifndef __SC__
 
 #define __CTEXT_BLACK               0
@@ -58,7 +94,6 @@
 #define __CTEXT_BROWN               6
 #define __CTEXT_WHITE               7
 #define __CTEXT_GRAY                8
-#define __CTEXT_DARKGRAY            8
 #define __CTEXT_LIGHTBLUE           9
 #define __CTEXT_LIGHTGREEN          10
 #define __CTEXT_LIGHTCYAN           11
@@ -87,44 +122,6 @@
 #define __CBACKGROUND_BRIGHTWHITE   0x3f3f3fL
 
 #endif
-
-//const unsigned int __BLACK = 0;
-//const unsigned int __BLUE = 1;
-//const unsigned int __GREEN = 2;
-//const unsigned int __CYAN = 3;
-//const unsigned int __RED = 4;
-//const unsigned int __MAGENTA = 5;
-//const unsigned int __BROWN = 6;
-//const unsigned int __WHITE = 7;
-//const unsigned int __GRAY = 8;
-//const unsigned int __DARKGRAY = 8;
-//const unsigned int __LIGHTBLUE = 9;
-//const unsigned int __LIGHTGREEN = 10;
-//const unsigned int __LIGHTCYAN = 11;
-//const unsigned int __LIGHTRED = 12;
-//const unsigned int __LIGHTMAGENTA = 13;
-//const unsigned int __LIGHTYELLOW = 14;
-//const unsigned int __YELLOW = 14;
-//const unsigned int __BRIGHTWHITE = 15;
-
-//const unsigned int __BLACK_BLINK = 16;
-//const unsigned int __BLUE_BLINK = 17;
-//const unsigned int __GREEN_BLINK = 18;
-//const unsigned int __CYAN_BLINK = 19;
-//const unsigned int __RED_BLINK = 20;
-//const unsigned int __MAGENTA_BLINK = 21;
-//const unsigned int __BROWN_BLINK = 22;
-//const unsigned int __WHITE_BLINK = 23;
-//const unsigned int __GRAY_BLINK = 24;
-//const unsigned int __DARKGRAY_BLINK = 24;
-//const unsigned int __LIGHTBLUE_BLINK = 25;
-//const unsigned int __LIGHTGREEN_BLINK = 26;
-//const unsigned int __LIGHTCYAN_BLINK = 27;
-//const unsigned int __LIGHTRED_BLINK = 28;
-//const unsigned int __LIGHTMAGENTA_BLINK = 29;
-//const unsigned int __LIGHTYELLOW_BLINK = 30;
-//const unsigned int __YELLOW_BLINK = 30;
-//const unsigned int __BRIGHTWHITE_BLINK = 31;
 
 #ifdef __SC__
 

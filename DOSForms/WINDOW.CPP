@@ -156,7 +156,7 @@ void Window::Title( const char *szTitle )
 
 char* Window::Title( void ) const
 {
-    return title;
+    return (char*)title;
 }
 
 void Window::TitleJustify( const char chTitleJustify )
@@ -186,7 +186,7 @@ void Window::Label( const char *szLabel )
 
 char* Window::Label( void ) const
 {
-    return label;
+    return (char*)label;
 }
 
 void Window::Coords( const unsigned short uTop, const unsigned short uLeft, const unsigned short uBottom, const unsigned short uRight )
