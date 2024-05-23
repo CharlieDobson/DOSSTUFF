@@ -1,4 +1,4 @@
-// LOGFILE.CPP : Main implementation file for log function
+// LOGFILE.CPP : Main implementation file for log class
 
 #include "logfile.hpp"
 
@@ -42,7 +42,7 @@ void LOGFILE::FileName( const char* Filename )
         }
     }
     else {
-        filename[0] = NULL;
+        *filename = NULL;
     }
 }
 
@@ -58,33 +58,33 @@ int LOGFILE::Delete( void )
 
 int LOGFILE::Write( const char* msg )
 {
-    if ( filename == NULL ) {
+    if ( *filename == NULL ) {
         return 0;
     }
 
     ofstream logfile( filename, ios::app, filebuf::sh_read );
 
-    if ( logfile.is_open() ) {
-    	char* timestamp = new char[22];
-    	char* message = new char[255]; // pre-pended space, null term, & newline
-    	struct _dosdate_t date;
-    	struct _dostime_t time;
-    	_dos_getdate( &date );
-    	_dos_gettime( &time );
-
-    	sprintf( timestamp, "[%d/%02d/%02d @ %02d:%02d:%02d]\0", date.year, date.month,
-        	date.day, time.hour, time.minute, time.second );
-
-        _snprintf( message, 258, " %s\n", msg );
-
-		logfile.write( timestamp, strlen( timestamp ) );
-		logfile.write( message, strlen( message ) );
-
-        logfile.close();
-	    delete[] message;
-        delete[] timestamp;
-	    return 1;
+    if ( !logfile.is_open() ) {
+        return 0;
     }
 
-    return 0;
+    char* timestamp = new char[22];
+    char* message = new char[255]; // pre-pended space, null term, & newline
+    struct _dosdate_t date;
+    struct _dostime_t time;
+    _dos_getdate( &date );
+    _dos_gettime( &time );
+
+    sprintf( timestamp, "[%d/%02d/%02d @ %02d:%02d:%02d]\0", date.year, date.month,
+       	date.day, time.hour, time.minute, time.second );
+
+    _snprintf( message, 258, " %s\n", msg );
+
+	logfile.write( timestamp, strlen( timestamp ) );
+	logfile.write( message, strlen( message ) );
+
+    logfile.close();
+    delete[] message;
+    delete[] timestamp;
+    return 1;
 }
