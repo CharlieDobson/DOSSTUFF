@@ -1,90 +1,90 @@
 // LOGFILE.CPP : Main implementation file for log function
 
-#include "logfile.h"
+#include "logfile.hpp"
 
 LOGFILE::LOGFILE( void )
 {
-    _filename = new char[_MAX_FNAME + _MAX_EXT + 2];
-    _filepath = new char[_MAX_PATH + 1];
+    filename = new char[_MAX_PATH + 1];
 
-    SetFileName( "TEMP.LOG" );
+    if ( getenv( "TEMP" ) != NULL ) {
+        sprintf( filename, "%s\\LOGFILE.TXT", getenv( "TEMP" ) );
+    }
+    else {
+        strcpy( filename, "LOGFILE.TXT" );
+    }
 }
 
-LOGFILE::LOGFILE( char *Filename )
+LOGFILE::LOGFILE( const char* Filename )
 {
-    _filename = new char[_MAX_FNAME + _MAX_EXT + 2];
-    _filepath = new char[_MAX_PATH + 1];
+    filename = new char[_MAX_PATH + 1];
 
-    SetFileName( Filename );
+    if ( getenv( "TEMP" ) != NULL ) {
+        sprintf( filename, "%s\\%s", getenv( "TEMP" ), Filename );
+    }
+    else {
+        strcpy( filename, Filename );
+    }
 }
 
 LOGFILE::~LOGFILE( void )
 {
-    delete[] _filename;
-    delete[] _filepath;
+    delete[] filename;
 }
 
-void LOGFILE::SetFileName( const char *Filename )
+void LOGFILE::FileName( const char* Filename )
 {
     if ( strlen( Filename ) < _MAX_FNAME + _MAX_EXT + 2 ) {
-        _filename = (char*)Filename;
-
         if ( getenv( "TEMP" ) != NULL ) {
-            strcpy( _filepath, getenv( "TEMP" ) );
-            strcat( _filepath, "\\" );
-            strcat( _filepath, _filename );
+            sprintf( filename, "%s\\%s", getenv( "TEMP" ), filename );
         }
         else {
-            _filepath = _filename;
+            strcpy( filename, Filename );
         }
     }
     else {
-        _filename = NULL;
-        _filepath = NULL;
+        filename[0] = NULL;
     }
 }
 
-char* LOGFILE::GetFilePath( void ) const
+char* LOGFILE::FileName( void ) const
 {
-    return _filepath;
+    return filename;
 }
 
-BOOL LOGFILE::Delete( void )
+int LOGFILE::Delete( void )
 {
-    return remove( _filepath ) == 0 ? TRUE : FALSE;
+	return remove( filename ) == 0 ? 1 : 0;
 }
 
-BOOL LOGFILE::Write( const char *msg )
+int LOGFILE::Write( const char* msg )
 {
-    if ( _filepath == NULL )
-        return FALSE;
+    if ( filename == NULL ) {
+        return 0;
+    }
 
-    ofstream *logfile = new ofstream( _filepath, ios::app, filebuf::sh_read );
+    ofstream logfile( filename, ios::app, filebuf::sh_read );
 
-    if ( logfile->is_open() ) {
-    	char *timestamp = new char[26];
-    	char *message = new char[strlen( msg ) + 3]; // pre-pended space, null term, & newline
+    if ( logfile.is_open() ) {
+    	char* timestamp = new char[22];
+    	char* message = new char[255]; // pre-pended space, null term, & newline
     	struct _dosdate_t date;
     	struct _dostime_t time;
     	_dos_getdate( &date );
     	_dos_gettime( &time );
-    	
-    	sprintf( timestamp, "[%d/%02d/%02d @ %02d:%02d:%02d]\0", date.year, date.month, 
+
+    	sprintf( timestamp, "[%d/%02d/%02d @ %02d:%02d:%02d]\0", date.year, date.month,
         	date.day, time.hour, time.minute, time.second );
-        
-        sprintf( message, " %s\n", msg );
 
-	logfile->write( timestamp, strlen( timestamp ) );
-	logfile->write( message, strlen( message ) );
+        _snprintf( message, 258, " %s\n", msg );
 
-        logfile->close();
+		logfile.write( timestamp, strlen( timestamp ) );
+		logfile.write( message, strlen( message ) );
+
+        logfile.close();
+	    delete[] message;
         delete[] timestamp;
-	delete[] message;
-	delete logfile;
-	return TRUE;
+	    return 1;
     }
-    
-    delete logfile;
 
-    return FALSE;
+    return 0;
 }
