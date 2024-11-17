@@ -2,15 +2,14 @@
 
 #include "dosforms.hpp"
 
-const unsigned short _MAX_DOSFORMS_TITLE = 35;
-const unsigned short _MAX_DOSFORMS_STATUSBAR = 78;
+const unsigned short max_dosforms_title = 35;
+const unsigned short max_dosforms_statusbar = 78;
 
-#ifdef __SC__
 static short dosforms_inited = 0;
 
 DOSForms::DOSForms( void )
 {
-    if ( dosforms_inited != 0 ) {
+    if ( dosforms_inited ) {
         return;
     }
 
@@ -31,20 +30,20 @@ DOSForms::DOSForms( void )
     form_color = __GRAY;
     title_color = 0;
     status_bar_color = 0;
-    screen_buffer = new unsigned short[80 * 25];
-    title_text = new char[_MAX_DOSFORMS_TITLE + 1];
-    status_bar_text = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    screen_buffer = new unsigned short[text_columns * text_rows];
+    title_text = new char[max_dosforms_title + 1];
+    status_bar_text = new char[max_dosforms_statusbar + 1];
     is_screen_buffer_used = 0;
     dosforms_inited = 1;
 
     title_text[0] = NULL;
     status_bar_text[0] = NULL;
-    memset( screen_buffer, '\0', 80 * 25 );
+    memset( screen_buffer, '\0', text_columns * text_rows );
 }
 
-DOSForms::DOSForms( const unsigned int FormColor = __GRAY )
+DOSForms::DOSForms( const unsigned int FormColor )
 {
-    if ( dosforms_inited != 0 ) {
+    if ( dosforms_inited ) {
         return;
     }
 
@@ -65,20 +64,20 @@ DOSForms::DOSForms( const unsigned int FormColor = __GRAY )
     form_color = FormColor;
     title_color = 0;
     status_bar_color = 0;
-    screen_buffer = new unsigned short[80 * 25];
-    title_text = new char[_MAX_DOSFORMS_TITLE + 1];
-    status_bar_text = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    screen_buffer = new unsigned short[text_columns * text_rows];
+    title_text = new char[max_dosforms_title + 1];
+    status_bar_text = new char[max_dosforms_statusbar + 1];
     is_screen_buffer_used = 0;
     dosforms_inited = 1;
 
     title_text[0] = NULL;
     status_bar_text[0] = NULL;
-    memset( screen_buffer, '\0', 80 * 25 );
+    memset( screen_buffer, '\0', text_columns * text_rows );
 }
 
 DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor, const char* szTitleText )
 {
-    if ( dosforms_inited != 0 ) {
+    if ( dosforms_inited ) {
         return;
     }
 
@@ -99,11 +98,11 @@ DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor,
     form_color = FormColor;
     title_color = TitleColor;
     status_bar_color = 0;
-    screen_buffer = new unsigned short[80 * 25];
-    title_text = new char[_MAX_DOSFORMS_TITLE + 1];
-    status_bar_text = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    screen_buffer = new unsigned short[text_columns * text_rows];
+    title_text = new char[max_dosforms_title + 1];
+    status_bar_text = new char[max_dosforms_statusbar + 1];
     is_screen_buffer_used = 0;
-    memset( screen_buffer, '\0', 80 * 25 );
+    memset( screen_buffer, '\0', text_columns * text_rows );
 
     title_text[0] = NULL;
     status_bar_text[0] = NULL;
@@ -113,7 +112,7 @@ DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor,
 
 DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor, const char* szTitleText, const unsigned int StatusBarColor, const char* szStatusBarText )
 {
-    if ( dosforms_inited != 0 ) {
+    if ( dosforms_inited ) {
         return;
     }
 
@@ -134,11 +133,11 @@ DOSForms::DOSForms( const unsigned int FormColor, const unsigned int TitleColor,
     form_color = FormColor;
     title_color = TitleColor;
     status_bar_color = StatusBarColor;
-    screen_buffer = new unsigned short[80 * 25];
-    title_text = new char[_MAX_DOSFORMS_TITLE + 1];
-    status_bar_text = new char[_MAX_DOSFORMS_STATUSBAR + 1];
+    screen_buffer = new unsigned short[text_columns * text_rows];
+    title_text = new char[max_dosforms_title + 1];
+    status_bar_text = new char[max_dosforms_statusbar + 1];
     is_screen_buffer_used = 0;
-    memset( screen_buffer, '\0', 80 * 25 );
+    memset( screen_buffer, '\0', text_columns * text_rows );
 
     title_text[0] = NULL;
     status_bar_text[0] = NULL;
@@ -157,6 +156,7 @@ DOSForms::~DOSForms( void )
         disp_setattr( old_display_attributes );
         disp_move( 0, 0 );
         disp_eeop();
+        disp_showcursor();
         disp_close();
         disp_setmode( old_display_mode );
     }
@@ -211,11 +211,11 @@ void DOSForms::TitleColor( const unsigned int Color )
 
 void DOSForms::TitleText( const char* Text )
 {
-    if ( Text == NULL || strlen( Text ) > _MAX_DOSFORMS_TITLE ) {
+    if ( Text == NULL || strlen( Text ) > max_dosforms_title ) {
         return;
     }
 
-    strncpy( title_text, Text, _MAX_DOSFORMS_TITLE );
+    strncpy( title_text, Text, max_dosforms_title );
 
     if ( disp_inited == 0 || dosforms_inited == 0 ) {
         return;
@@ -252,7 +252,7 @@ int DOSForms::RemoveTitleBar( void )
     if ( is_mouse_enabled != 0 ) {
         disp_setattr( title_color );
         disp_move( 0, 0 );
-        disp_puts( "[Ä]" ); // ALT+0196
+        disp_puts( "[]" ); // ALT+0196
         disp_setattr( form_color );
 
         msm_showcursor();
@@ -263,11 +263,11 @@ int DOSForms::RemoveTitleBar( void )
 
 void DOSForms::StatusBarText( const char* Text )
 {
-    if ( Text == NULL || strlen( Text ) > _MAX_DOSFORMS_STATUSBAR ) {
+    if ( Text == NULL || strlen( Text ) > max_dosforms_statusbar ) {
         return;
     }
 
-    strncpy( status_bar_text, Text, _MAX_DOSFORMS_STATUSBAR );
+    strncpy( status_bar_text, Text, max_dosforms_statusbar );
 
     if ( disp_inited == 0 || dosforms_inited == 0 ) {
         return;
@@ -359,6 +359,8 @@ int DOSForms::OpenForm( void )
     }
     */
 
+    disp_hidecursor();
+
     if ( is_mouse_enabled != 0 ) {
         msm_hidecursor();
     }
@@ -384,7 +386,7 @@ int DOSForms::OpenForm( void )
         msm_hidecursor();
         disp_setattr( title_color );
         disp_move( 0, 0 );
-        disp_puts( "[Ä]" ); // ALT+0196
+        disp_puts( "[]" ); // ALT+0196
         msm_showcursor();
     }
 
@@ -404,7 +406,7 @@ int DOSForms::DrawButton( const Window window )
     }
 
     if ( window.Top() != window.Bottom() ) {
-        disp_fillbox( __BLACK * 256 + ' ', window.Top() + 1, window.Left() + 2, window.Bottom() + 1, window.Right() + 2 );
+        disp_fillbox( __BLACK * 256 + ' ', window.Top() + 1, window.Left() + 1, window.Bottom() + 1, window.Right() + 1 );
     }
     disp_fillbox( window.Color() * 256 + ' ', window.Top(), window.Left(), window.Bottom(), window.Right() );
 
@@ -770,892 +772,3 @@ char* DOSForms::StatusBarText( void ) const
 {
     return status_bar_text;
 }
-
-#elif ( _MSC_VER || __WATCOMC__ )
-///
-/// ***********************************
-/// Microsoft / Open WatCom compatible
-/// ***********************************
-///
-
-DOSForms::DOSForms( void )
-{
-    struct videoconfig vc;
-    _getvideoconfig( &vc );
-
-    text_columns = vc.numtextcols;
-    text_rows = vc.numtextrows;
-    old_display_mode = vc.mode;
-    old_text_display = _gettextcolor();
-    old_background_display = _getbkcolor();
-    old_text_cursor = _settextcursor( 0x2000 );
-
-    if ( old_display_mode != _TEXTBW80 || old_display_mode != _TEXTC80 ) {
-        _setvideomode( _TEXTC80 ) == 0 ? _setvideomode( _TEXTBW80 ) == 0 ? is_display_inited = 0 : is_display_inited = 1 : is_display_inited = 1;
-    }
-    else {
-        is_display_inited = 1;
-    }
-
-    title_text = new char[_MAX_DOSFORMS_TITLE + 1];
-    status_bar_text = new char[_MAX_DOSFORMS_STATUSBAR + 1];
-    form_text_color = 1;
-    form_background_color = 7;
-    title_text_color = 0;
-    title_background_color = 0L;
-    status_bar_text_color = 0;
-    status_bar_background_color = 0L;
-
-    mouse_inited = 0;
-    mouse_visible = 0;
-    mouse_position_x = 0;
-    mouse_position_y = 0;
-
-    *title_text = NULL;
-    *status_bar_text = NULL;
-
-    union REGS regs;
-    struct SREGS sregs;
-    // Check to see if the mouse driver is safe to call
-    // Get interrupt vector
-    regs.h.ah = 0x35;
-    regs.h.al = 33;
-    int86x( 0x21, &regs, &regs, &sregs );
-    if ( ( sregs.es | regs.x.bx ) == 0 ) {
-        return;
-    }
-
-    regs.x.ax = 0x0000; // reset mouse driver
-    int86( 0x33, &regs, &regs );
-    if ( regs.x.ax == 0 ) {
-        return;
-    }
-
-    // despite documentation saying success should be 0x0020,
-    // testing has shown successful result is 0xffff
-    regs.x.ax = 0x0020;     // enable mouse driver
-    int86( 0x33, &regs, &regs );
-    if ( regs.x.ax != 0xffff ) {
-        return;
-    }
-
-    mouse_inited = 1;
-}
-
-DOSForms::DOSForms( const short FormTextColor, const long FormBackgroundColor )
-{
-    struct videoconfig vc;
-    _getvideoconfig( &vc );
-
-    text_columns = vc.numtextcols;
-    text_rows = vc.numtextrows;
-    old_display_mode = vc.mode;
-    old_text_display = _gettextcolor();
-    old_background_display = _getbkcolor();
-    old_text_cursor = _settextcursor( 0x2000 );
-
-    if ( old_display_mode != _TEXTBW80 || old_display_mode != _TEXTC80 ) {
-        _setvideomode( _TEXTC80 ) == 0 ? _setvideomode( _TEXTBW80 ) == 0 ? is_display_inited = 0 : is_display_inited = 1 : is_display_inited = 1;
-    }
-    else {
-        is_display_inited = 1;
-    }
-
-    title_text = new char[_MAX_DOSFORMS_TITLE + 1];
-    status_bar_text = new char[_MAX_DOSFORMS_STATUSBAR + 1];
-    form_text_color = FormTextColor;
-    form_background_color = FormBackgroundColor;
-    title_text_color = 0;
-    title_background_color = 0L;
-    status_bar_text_color = 0;
-    status_bar_background_color = 0L;
-
-    mouse_inited = 0;
-    mouse_visible = 0;
-    mouse_position_x = 0;
-    mouse_position_y = 0;
-
-    *title_text = NULL;
-    *status_bar_text = NULL;
-
-    union REGS regs;
-    struct SREGS sregs;
-    // Check to see if the mouse driver is safe to call
-    // Get interrupt vector
-    regs.h.ah = 0x35;
-    regs.h.al = 33;
-    int86x( 0x21, &regs, &regs, &sregs );
-    if ( ( sregs.es | regs.x.bx ) == 0 ) {
-        return;
-    }
-
-    regs.x.ax = 0x0000; // reset mouse driver
-    int86( 0x33, &regs, &regs );
-    if ( regs.x.ax == 0 ) {
-        return;
-    }
-
-    // despite documentation saying success should be 0x0020,
-    // testing has shown successful result is 0xffff
-    regs.x.ax = 0x0020;     // enable mouse driver
-    int86( 0x33, &regs, &regs );
-    if ( regs.x.ax != 0xffff ) {
-        return;
-    }
-
-    mouse_inited = 1;
-}
-
-DOSForms::DOSForms( const short FormTextColor, const long FormBackgroundColor, const short TitleTextColor, const long TitleBackgroundColor, const char* TitleText )
-{
-    struct videoconfig vc;
-    _getvideoconfig( &vc );
-
-    text_columns = vc.numtextcols;
-    text_rows = vc.numtextrows;
-    old_display_mode = vc.mode;
-    old_text_display = _gettextcolor();
-    old_background_display = _getbkcolor();
-    old_text_cursor = _settextcursor( 0x2000 );
-
-    if ( old_display_mode != _TEXTBW80 || old_display_mode != _TEXTC80 ) {
-        _setvideomode( _TEXTC80 ) == 0 ? _setvideomode( _TEXTBW80 ) == 0 ? is_display_inited = 0 : is_display_inited = 1 : is_display_inited = 1;
-    }
-    else {
-        is_display_inited = 1;
-    }
-
-    title_text = new char[_MAX_DOSFORMS_TITLE + 1];
-    status_bar_text = new char[_MAX_DOSFORMS_STATUSBAR + 1];
-    form_text_color = FormTextColor;
-    form_background_color = FormBackgroundColor;
-    title_text_color = TitleTextColor;
-    title_background_color = TitleBackgroundColor;
-    status_bar_text_color = 0;
-    status_bar_background_color = 0L;
-
-    mouse_inited = 0;
-    mouse_visible = 0;
-    mouse_position_x = 0;
-    mouse_position_y = 0;
-
-    *title_text = NULL;
-    *status_bar_text = NULL;
-    strncpy( title_text, TitleText, _MAX_DOSFORMS_TITLE );
-
-    union REGS regs;
-    struct SREGS sregs;
-    // Check to see if the mouse driver is safe to call
-    // Get interrupt vector
-    regs.h.ah = 0x35;
-    regs.h.al = 33;
-    int86x( 0x21, &regs, &regs, &sregs );
-    if ( ( sregs.es | regs.x.bx ) == 0 ) {
-        return;
-    }
-
-    regs.x.ax = 0x0000; // reset mouse driver
-    int86( 0x33, &regs, &regs );
-    if ( regs.x.ax == 0 ) {
-        return;
-    }
-
-    // despite documentation saying success should be 0x0020,
-    // testing has shown successful result is 0xffff
-    regs.x.ax = 0x0020;     // enable mouse driver
-    int86( 0x33, &regs, &regs );
-    if ( regs.x.ax != 0xffff ) {
-        return;
-    }
-
-    mouse_inited = 1;
-}
-
-DOSForms::~DOSForms( void )
-{
-    delete[] status_bar_text;
-    delete[] title_text;
-    _setvideomode( old_display_mode );
-    _settextcolor( old_text_display );
-    _setbkcolor( old_background_display );
-    _settextcursor( old_text_cursor );
-}
-
-char* DOSForms::TitleText( void ) const
-{
-    return title_text;
-}
-
-char* DOSForms::StatusBarText( void ) const
-{
-    return status_bar_text;
-}
-
-short DOSForms::FormTextColor( void ) const
-{
-    return form_text_color;
-}
-
-long DOSForms::FormBackgroundColor( void ) const
-{
-    return form_background_color;
-}
-
-short DOSForms::TitleTextColor( void ) const
-{
-    return title_text_color;
-}
-
-long DOSForms::TitleBackgroundColor( void ) const
-{
-    return title_background_color;
-}
-
-short DOSForms::StatusBarTextColor( void ) const
-{
-    return status_bar_text_color;
-}
-
-long DOSForms::StatusBarBackgroundColor( void ) const
-{
-    return status_bar_background_color;
-}
-
-void DOSForms::TitleTextColor( const short Color )
-{
-    if ( Color == NULL ) {
-        return;
-    }
-
-    title_text_color = Color;
-
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        _settextcolor( title_text_color );
-        _setbkcolor( title_background_color );
-        _settextwindow( 1, 1, 1, text_columns );
-
-        if ( title_text != NULL ) {
-            TitleText( title_text );
-        }
-
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-void DOSForms::TitleBackgroundColor( const long Color )
-{
-    if ( Color == NULL ) {
-        return;
-    }
-
-    title_background_color = Color;
-
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        _settextcolor( title_text_color );
-        _setbkcolor( title_background_color );
-        _settextwindow( 1, 1, 1, text_columns );
-
-        if ( title_text != NULL ) {
-            TitleText( title_text );
-        }
-
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-void DOSForms::TitleText( const char* Text )
-{
-    if ( Text == NULL ) {
-        return;
-    }
-
-    strncpy( title_text, Text, _MAX_DOSFORMS_TITLE );
-
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        _settextcolor( title_text_color );
-        _setbkcolor( title_background_color );
-        _settextwindow( 1, 1, 1, text_columns );
-        _clearscreen( _GWINDOW );
-        _settextposition( 1, CenterScreen( title_text ) );
-        _outtext( title_text );
-
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-void DOSForms::StatusBarTextColor( const short Color )
-{
-    if ( Color == NULL ) {
-        return;
-    }
-
-    status_bar_text_color = Color;
-
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        _settextcolor( status_bar_text_color );
-        _setbkcolor( status_bar_background_color );
-        _settextwindow( text_rows, 1, text_rows, text_columns );
-        _clearscreen( _GWINDOW );
-
-        if ( status_bar_text != NULL ) {
-            StatusBarText( status_bar_text );
-        }
-
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-void DOSForms::StatusBarBackgroundColor( const long Color )
-{
-    if ( Color == NULL ) {
-        return;
-    }
-
-    status_bar_background_color = Color;
-
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        _settextcolor( status_bar_text_color );
-        _setbkcolor( status_bar_background_color );
-        _settextwindow( text_rows, 1, text_rows, text_columns );
-        _clearscreen( _GWINDOW );
-
-        if ( status_bar_text != NULL ) {
-            StatusBarText( status_bar_text );
-        }
-
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-
-void DOSForms::StatusBarText( const char* Text )
-{
-    if ( Text == NULL ) {
-        return;
-    }
-
-    strncpy( status_bar_text, Text, _MAX_DOSFORMS_STATUSBAR );
-
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        _settextcolor( status_bar_text_color );
-        _setbkcolor( status_bar_background_color );
-        _settextwindow( text_rows, 1, text_rows, text_columns );
-        _clearscreen( _GWINDOW );
-        _settextposition( text_rows, CenterScreen( status_bar_text ) );
-        _outtext( status_bar_text );
-
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-void DOSForms::ClearScreen( void )
-{
-    OpenForm();
-}
-
-void DOSForms::ClearRow( unsigned int row )
-{
-    if ( is_display_inited == 0 ) {
-        return;
-    }
-
-    if ( row > (unsigned int)text_rows ) {
-        return;
-    }
-
-    if ( mouse_inited != 0 ) {
-        HideMouse();
-    }
-
-    _settextcolor( form_text_color );
-    _setbkcolor( form_background_color );
-    _settextwindow( row, 1, row, text_columns );
-    _clearscreen( _GWINDOW );
-
-    _settextwindow( 1, 1, text_rows, text_columns );
-
-    if ( mouse_inited != 0 ) {
-        ShowMouse();
-    }
-}
-
-unsigned int DOSForms::CenterScreen( char* Text ) const
-{
-    return ( strlen( Text ) + text_columns ) / 2 - strlen( Text );
-}
-
-int DOSForms::OpenForm( void )
-{
-    if ( is_display_inited == 0 ) {
-        fputs( "Failed to initialize display!\n", stderr );
-        return is_display_inited;
-    }
-
-    if ( mouse_inited != 0 ) {
-        HideMouse();
-    }
-
-    _settextcolor( form_text_color );
-    _setbkcolor( form_background_color );
-    _clearscreen( _GCLEARSCREEN );
-
-    if ( mouse_inited != 0 ) {
-        ShowMouse();
-    }
-
-    if ( title_text_color != 0 || title_background_color != 0 ) {
-        TitleTextColor( title_text_color );
-        TitleBackgroundColor( title_background_color );
-    }
-
-    if ( title_text != NULL ) {
-        TitleText( title_text );
-    }
-
-    if ( mouse_inited != 0 ) {
-        if ( title_text_color != 0 && title_background_color != 0 ) {
-            _settextcolor( title_text_color );
-            _setbkcolor( title_background_color );
-        }
-        else {
-            _settextcolor( form_text_color );
-            _setbkcolor( form_background_color );
-        }
-
-        _settextposition( 1, 1 );
-        _outtext( "[Ä]" ); // ALT+0196
-    }
-
-    if ( status_bar_text != NULL ) {
-        StatusBarText( status_bar_text );
-    }
-
-    _settextcolor( form_text_color );
-    _setbkcolor( form_background_color );
-
-    return is_display_inited;
-}
-
-void DOSForms::WriteLine( const short Row, const short Column, const char* Text )
-{
-    if ( Text == NULL ) {
-        return;
-    }
-
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        if ( title_text_color == 0 && title_background_color == 0 && status_bar_text_color == 0 && status_bar_background_color == 0 ) {
-            _settextwindow( 1, 1, text_rows, text_columns );
-        }
-        else if ( title_text_color != 0 && title_background_color != 0 && status_bar_text_color == 0 && status_bar_background_color == 0 ) {
-            _settextwindow( 2, 1, text_rows, text_columns );
-        }
-        else if ( title_text_color == 0 && title_background_color == 0 && status_bar_text_color != 0 && status_bar_background_color != 0 ) {
-            _settextwindow( 1, 1, text_rows - 1, text_columns );
-        }
-        else {
-            _settextwindow( 2, 1, text_rows - 1, text_columns );
-        }
-
-        char *buffer = new char[text_columns + 1];
-        strncpy( buffer, Text, text_columns - Column - 1 );
-
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _settextposition( Row, Column );
-        _outtext( buffer );
-        delete[] buffer;
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-void DOSForms::RemoveTitleBar( void )
-{
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        _settextwindow( 1, 1, 1, text_columns );
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _clearscreen( _GWINDOW );
-
-        title_text_color = 0;
-        title_background_color = 0L;
-        title_text = NULL;
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-void DOSForms::RemoveStatusBar( void )
-{
-    if ( is_display_inited != 0 ) {
-        if ( mouse_inited != 0 ) {
-            HideMouse();
-        }
-
-        _settextwindow( text_rows, 1, text_rows, text_columns );
-        _settextcolor( form_text_color );
-        _setbkcolor( form_background_color );
-        _clearscreen( _GWINDOW );
-
-        status_bar_text_color = 0;
-        status_bar_background_color = 0L;
-        status_bar_text = NULL;
-        _settextwindow( 1, 1, text_rows, text_columns );
-
-        if ( mouse_inited != 0 ) {
-            ShowMouse();
-        }
-    }
-}
-
-int DOSForms::DrawButton( const Window window )
-{
-    if ( is_display_inited == 0 ) {
-        return -1;
-    }
-
-    if ( mouse_inited != 0 ) {
-        HideMouse();
-    }
-
-    if ( window.DropShadow() != 0 ) {
-        _settextcolor( 0 );
-        _setbkcolor( 0 );
-        _settextwindow( window.Top() + 1, window.Left() + 2, window.Bottom() + 1, window.Right() + 2 );
-        _clearscreen( _GWINDOW );
-    }
-
-    _settextcolor( window.TextColor() );
-    _setbkcolor( window.BackgroundColor() );
-    _settextwindow( window.Top(), window.Left(), window.Bottom(), window.Right() );
-    _clearscreen( _GWINDOW );
-
-    _settextwindow( 1, 1, text_rows, text_columns );
-    short button_row = (short)( window.Top() + window.Bottom() ) / 2;
-    short button_column = (short)( window.Left() + window.Right() + strlen( window.Label() ) ) / 2 - strlen( window.Label() ) + 1;
-    _settextposition( button_row, button_column );
-    _outtext( window.Label() );
-
-    _settextcolor( form_text_color );
-    _setbkcolor( form_background_color );
-
-    if ( mouse_inited != 0 ) {
-        ShowMouse();
-    }
-
-    return 1;
-}
-
-int DOSForms::OpenPopupWindow( const Window window )
-{
-    if ( is_display_inited == 0 ) {
-        return -1;
-    }
-
-    if ( mouse_inited != 0 ) {
-        HideMouse();
-    }
-
-    // add code here
-
-    if ( mouse_inited != 0 ) {
-        ShowMouse();
-    }
-
-    return 1;
-}
-
-int DOSForms::ClosePopupWindow( void )
-{
-    if ( is_display_inited == 0 ) {
-        return -1;
-    }
-
-    if ( mouse_inited != 0 ) {
-        HideMouse();
-    }
-
-    // add code here
-
-    if ( mouse_inited != 0 ) {
-        ShowMouse();
-    }
-
-    return 1;
-}
-
-DIALOG_BUTTON DOSForms::MessageBox( const Window& window, const DIALOG_BUTTON Buttons, unsigned int ButtonColor )
-{
-    if ( mouse_inited != 0 ) {
-        HideMouse();
-    }
-
-    // add code here
-
-    if ( mouse_inited != 0 ) {
-        ShowMouse();
-    }
-
-    return BTN_OK;
-}
-
-//
-// Mouse methods
-//
-int DOSForms::IsMouseEnabled( void ) const
-{
-    return mouse_inited;
-}
-
-void DOSForms::ShowMouse( void )
-{
-    if ( mouse_visible != 0 || mouse_inited == 0 ) {
-        return;
-    }
-
-    union REGS regs;
-    regs.x.ax = 0x0001;
-    int86( 0x33, &regs, &regs );
-    mouse_visible = 1;
-}
-
-void DOSForms::HideMouse( void )
-{
-    if ( mouse_visible == 0 || mouse_inited == 0 ) {
-        return;
-    }
-
-    union REGS regs;
-    regs.x.ax = 0x0002;
-    int86( 0x33, &regs, &regs );
-    mouse_visible = 0;
-}
-
-// Function: MouseStatus()
-// return value is state of buttons as bit pattern
-// bit 0: left button ( 1 == down, 0 == up )
-// bit 1: right button ( 1 == down, 0 == up )
-// bit 2: center button ( 1 == down, 0 == up )
-// e.g.: 0000000000000011 = mouse left and right pressed down
-// e.g.: 0000000000000010 = right button pressed down
-// other bits should be ignored
-int DOSForms::MouseStatus( void )
-{
-    if ( mouse_inited == 0 ) {
-        return -1;
-    }
-
-    union REGS regs;
-    regs.x.ax = 0x0003;
-    int86( 0x33, &regs, &regs );
-    mouse_position_x = regs.x.cx;
-    mouse_position_y = regs.x.dx;
-    return regs.x.bx;
-}
-
-void DOSForms::MousePosition( const unsigned x, const unsigned y )
-{
-    if ( mouse_inited == 0 ) {
-        return;
-    }
-
-    unsigned char mouseX;
-    unsigned char mouseY;
-    sprintf( (char*)&mouseX, "%x", x ); // converts X to hex value?
-    sprintf( (char*)&mouseY, "%x", y ); // converts Y to hex value?
-
-    union REGS regs;
-    regs.x.ax = 0x0004;
-    regs.x.cx = mouseX;
-    regs.x.dx = mouseY;
-    int86( 0x33, &regs, &regs );
-}
-
-// Function: MousePress()
-// return value is state of buttons as bit pattern
-// bit 0: left button ( 1 == down, 0 == up )
-// bit 1: right button ( 1 == down, 0 == up )
-// bit 2: center button ( 1 == down, 0 == up )
-// other bits should be ignored
-// button = button to query since last call to MousePress()
-// x = column position of last press
-// y = row position of last press
-int DOSForms::MousePress( unsigned button, unsigned x, unsigned y ) const
-{
-    if ( mouse_inited == 0 ) {
-        return -1;
-    }
-
-    if ( button > 2 ) {
-        return -2;
-    }
-
-    union REGS regs;
-    regs.x.ax = 0x0005;
-    regs.x.bx = button;
-    int86( 0x33, &regs, &regs );
-    button = regs.x.bx;
-    x = regs.x.cx;
-    y = regs.x.dx;
-    return regs.x.ax;
-}
-
-// Function: MouseRelease()
-// return value is state of buttons as bit pattern
-// bit 0: left button ( 1 == down, 0 == up )
-// bit 1: right button ( 1 == down, 0 == up )
-// bit 2: center button ( 1 == down, 0 == up )
-// other bits should be ignored
-// button = button to query since last call to MouseRelease()
-// x = column position of last release
-// y = row position of last release
-int DOSForms::MouseRelease( unsigned button, unsigned x, unsigned y ) const
-{
-    if ( mouse_inited == 0 ) {
-        return -1;
-    }
-
-    if ( button > 2 ) {
-        return -2;
-    }
-
-    union REGS regs;
-    regs.x.ax = 0x0006;
-    regs.x.bx = button;
-    int86( 0x33, &regs, &regs );
-    button = regs.x.bx;
-    x = regs.x.cx;
-    y = regs.x.dx;
-    return regs.x.ax;
-}
-
-// Function: MouseAreaX
-// defines min and max mouse position on the X axis
-void DOSForms::MouseAreaX( const unsigned min, const unsigned max )
-{
-    if ( mouse_inited == 0 ) {
-        return;
-    }
-
-    unsigned char minimum;
-    unsigned char maximum;
-    sprintf( (char*)&minimum, "%x", min ); // converts min to hex?
-    sprintf( (char*)&maximum, "%x", max ); // converts max to hex?
-
-    union REGS regs;
-    regs.x.ax = 0x0007;
-    regs.x.cx = minimum;
-    regs.x.dx = maximum;
-    int86( 0x33, &regs, &regs );
-}
-
-// Function: MouseAreaY
-// defines min and max mouse position on the Y axis
-void DOSForms::MouseAreaY( const unsigned min, const unsigned max )
-{
-    if ( mouse_inited == 0 ) {
-        return;
-    }
-
-    unsigned char minimum;
-    unsigned char maximum;
-    sprintf( (char*)&minimum, "%x", min ); // converts min to hex?
-    sprintf( (char*)&maximum, "%x", max ); // converts max to hex?
-
-    union REGS regs;
-    regs.x.ax = 0x0008;
-    regs.x.cx = minimum;
-    regs.x.dx = maximum;
-    int86( 0x33, &regs, &regs );
-}
-
-// Function: ReadMouseCounters
-// returns x and y of mouse motion in mickeys
-void DOSForms::ReadMouseCounters( int x, int y )
-{
-    if ( mouse_inited == 0 ) {
-        return;
-    }
-
-    union REGS regs;
-    regs.x.ax = 0x000b;
-    int86( 0x33, &regs, &regs );
-    x = regs.x.cx;
-    y = regs.x.dx;
-}
-
-#endif // __SC__
