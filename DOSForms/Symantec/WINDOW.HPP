@@ -1,7 +1,7 @@
 // Window.hpp : class definition file
 
 #ifndef WINDOW_HPP
-#define WINDOW_HPP
+#define WINDOW_HPP 1
 
 #include <stdlib.h> // toupper()
 #include <ctype.h> // toupper()
@@ -9,30 +9,21 @@
 
 class Window
 {
-    unsigned short top;
-    unsigned short left;
-    unsigned short bottom;
-    unsigned short right;
-    #ifdef __SC__
-    unsigned short color;
-    unsigned short borderstyle;
-    #elif ( _MSC_VER || __WATCOMC__ )
-    short text_color;
-    long background_color;
-    #endif
-    short drop_shadow;
-    char title[21];
-    char title_justify;
-    char label[41];
+    unsigned short m_top;
+    unsigned short m_left;
+    unsigned short m_bottom;
+    unsigned short m_right;
+    unsigned short m_color;
+    unsigned short m_borderstyle;
+    short m_drop_shadow;
+    char m_title[21];
+    char m_title_justify;
+    char m_label[41];
 
-  public:
+public:
     Window( void );
     Window( const unsigned short Top, const unsigned short Left, const unsigned short Bottom, const unsigned short Right );
-	#ifdef __SC__
-    Window( const unsigned short Top, const unsigned short Left, const unsigned short Bottom, const unsigned short Right, const unsigned short uColor, const unsigned short Style );
-	#elif ( _MSC_VER || __WATCOMC__ )
-    Window( const unsigned short Top, const unsigned short Left, const unsigned short Bottom, const unsigned short Right, const short TColor, const short BColor );
-	#endif
+    Window( const unsigned short Top, const unsigned short Left, const unsigned short Bottom, const unsigned short Right, const unsigned short color, const unsigned short Style );
     ~Window( void );
 
     void Top( const unsigned short point );
@@ -43,17 +34,10 @@ class Window
     unsigned short Bottom( void ) const;
     void Right( const unsigned short point );
     unsigned short Right( void ) const;
-    #ifdef __SC__
-    void Color( const unsigned short uColor );
+    void Color( const unsigned short color );
     unsigned short Color( void ) const;
     void BorderStyle( const unsigned short Style );
     unsigned short BorderStyle( void ) const;
-    #elif ( _MSC_VER || __WATCOMC__ )
-    void TextColor( const short Color );
-    short TextColor( void ) const;
-    void BackgroundColor( const long Color );
-    long BackgroundColor( void ) const;
-    #endif
     void DropShadow( const short dropshadow );
     short DropShadow( void ) const;
     void Title( const char* Text );
