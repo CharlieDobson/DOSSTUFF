@@ -9,7 +9,6 @@
 #include <memory.h>
 
 class STRING
-
 {
     char* m_string;
 
