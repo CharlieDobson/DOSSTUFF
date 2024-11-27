@@ -17,13 +17,13 @@ class FormMessageWindow
 
 public:
     FormMessageWindow( const forms_colors_t color, const window_coordinates_t coordinates, const char* title, const char* message, const dialog_buttons_t buttons );
-    FormMessageWindow( const foreground_colors_t foreground, const background_colors_t background, const short column, const short row, const short width, const short height, const char* title, const char* message, const dialog_buttons_t buttons );
+    FormMessageWindow( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, const char* title, const char* message, const dialog_buttons_t buttons );
     FormMessageWindow( const FormMessageWindow& messageWindow );
     ~FormMessageWindow( void );
 
     // operators
     FormMessageWindow& operator=( const FormMessageWindow& messageWindow );
-    int operator==( const FormMessageWindow& messageWindow );
+    boolean operator==( const FormMessageWindow& messageWindow );
     
     // accessors
     forms_colors_t color( void ) const;

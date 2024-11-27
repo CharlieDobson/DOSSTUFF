@@ -99,5 +99,11 @@ struct window_coordinates_t
     short end_row;      // ending row number, should be equal to row + height
 };
 
+enum boolean
+{
+    FALSE = ( 1 == 0 ),
+    TRUE = ( !FALSE )
+};
+
 #endif
 #endif

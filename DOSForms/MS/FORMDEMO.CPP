@@ -15,7 +15,7 @@ int main( int argc, char* argv[] )
     status_bar.foreground = FG_LIGHT_CYAN;
     status_bar.background = BG_CYAN;
     DOSForms app( forms_colors, title_colors, "Form Demo Title", status_bar, " Form Demo Status Bar Text" );
-    FormButton button1( FG_LIGHT_CYAN, BG_CYAN, 5, 4, 10, 3, "Test" );
+    FormButton button1( FG_LIGHT_CYAN, BG_CYAN, 4, 9, 3, 10, "Test" );
 
     app.OpenForm();
     app.DrawButton( button1 );

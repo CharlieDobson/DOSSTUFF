@@ -15,16 +15,16 @@ FormButton::FormButton( const forms_colors_t color, const window_coordinates_t c
     }
 }
 
-FormButton::FormButton( const foreground_colors_t foreground, const background_colors_t background, const short column, const short row, const short width, const short height, char* label )
+FormButton::FormButton( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, char* label )
 {
     m_color.foreground = foreground;
     m_color.background = background;
-    m_coordinates.column = column;
     m_coordinates.row = row;
-    m_coordinates.width = width;
+    m_coordinates.column = column;
     m_coordinates.height = height;
-    m_coordinates.end_column = column + width;
-    m_coordinates.end_row = row + height;
+    m_coordinates.width = width;
+    m_coordinates.end_row = row + height - 1;
+    m_coordinates.end_column = column + width - 1;
     m_label = new char[m_coordinates.width - 2];
 
     strncpy( m_label, label, m_coordinates.width - 2 );
@@ -64,45 +64,45 @@ FormButton& FormButton::operator=( const FormButton& button )
     return *this;
 }
 
-int FormButton::operator==( const FormButton& button )
+boolean FormButton::operator==( const FormButton& button )
 {
     if ( m_color.foreground != button.color().foreground) {
-        return 0;
+        return FALSE;
     }
 
     if ( m_color.background != button.color().background ) {
-        return 0;
-    }
-
-    if ( m_coordinates.column != button.coordinates().column ) {
-        return 0;
+        return FALSE;
     }
 
     if ( m_coordinates.row != button.coordinates().row ) {
-        return 0;
+        return FALSE;
     }
 
-    if ( m_coordinates.width != button.coordinates().width ) {
-        return 0;
+    if ( m_coordinates.column != button.coordinates().column ) {
+        return FALSE;
     }
 
     if ( m_coordinates.height != button.coordinates().height ) {
-        return 0;
+        return FALSE;
     }
 
-    if ( m_coordinates.end_column != button.coordinates().end_column ) {
-        return 0;
+    if ( m_coordinates.width != button.coordinates().width ) {
+        return FALSE;
     }
 
     if ( m_coordinates.end_row != button.coordinates().end_row ) {
-        return 0;
+        return FALSE;
+    }
+
+    if ( m_coordinates.end_column != button.coordinates().end_column ) {
+        return FALSE;
     }
 
     if ( strcmp( m_label, button.label() ) != 0 ) {
-        return 0;
+        return FALSE;
     }
 
-    return 1;
+    return TRUE;
 }
 
 forms_colors_t FormButton::color( void ) const

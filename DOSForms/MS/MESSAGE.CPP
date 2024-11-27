@@ -23,16 +23,16 @@ FormMessageWindow::FormMessageWindow( const forms_colors_t color, const window_c
     }
 }
 
-FormMessageWindow::FormMessageWindow( const foreground_colors_t foreground, const background_colors_t background, const short column, const short row, const short width, const short height, const char* title, const char* message, const dialog_buttons_t buttons )
+FormMessageWindow::FormMessageWindow( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, const char* title, const char* message, const dialog_buttons_t buttons )
 {
     m_color.foreground = foreground;
     m_color.background = background;
-    m_coordinates.column = column;
     m_coordinates.row = row;
-    m_coordinates.width = width;
+    m_coordinates.column = column;
     m_coordinates.height = height;
-    m_coordinates.end_column = column + width;
-    m_coordinates.end_row = row + height;
+    m_coordinates.width = width;
+    m_coordinates.end_row = row + height - 1;
+    m_coordinates.end_column = column + width - 1;
     m_title = new char[m_coordinates.width / 2];
     m_message = new char[200];
     m_buttons = buttons;
@@ -88,53 +88,53 @@ FormMessageWindow& FormMessageWindow::operator=( const FormMessageWindow& messag
     return *this;
 }
 
-int FormMessageWindow::operator==( const FormMessageWindow& messageWindow )
+boolean FormMessageWindow::operator==( const FormMessageWindow& messageWindow )
 {
     if ( m_color.foreground != messageWindow.color().foreground ) {
-        return 0;
+        return FALSE;
     }
 
     if ( m_color.background != messageWindow.color().background ) {
-        return 0;
-    }
-
-    if ( m_coordinates.column != messageWindow.coordinates().column ) {
-        return 0;
+        return FALSE;
     }
 
     if ( m_coordinates.row != messageWindow.coordinates().row ) {
-        return 0;
+        return FALSE;
     }
 
-    if ( m_coordinates.width != messageWindow.coordinates().width ) {
-        return 0;
+    if ( m_coordinates.column != messageWindow.coordinates().column ) {
+        return FALSE;
     }
 
     if ( m_coordinates.height != messageWindow.coordinates().height ) {
-        return 0;
+        return FALSE;
     }
 
-    if ( m_coordinates.end_column != messageWindow.coordinates().end_column ) {
-        return 0;
+    if ( m_coordinates.width != messageWindow.coordinates().width ) {
+        return FALSE;
     }
 
     if ( m_coordinates.end_row != messageWindow.coordinates().end_row ) {
-        return 0;
+        return FALSE;
+    }
+
+    if ( m_coordinates.end_column != messageWindow.coordinates().end_column ) {
+        return FALSE;
     }
 
     if ( strcmp( m_title, messageWindow.title() ) != 0 ) {
-        return 0;
+        return FALSE;
     }
 
     if ( strcmp( m_message, messageWindow.message() ) != 0 ) {
-        return 0;
+        return FALSE;
     }
 
     if ( m_buttons != messageWindow.buttons ) {
-        return 0;
+        return FALSE;
     }
 
-    return 1;
+    return TRUE;
 }
 
 forms_colors_t FormMessageWindow::color( void ) const

@@ -147,7 +147,7 @@ const unsigned short mouse_column_78 = mouse_column_2 * 77;
 const unsigned short mouse_column_79 = mouse_column_2 * 78;
 const unsigned short mouse_column_80 = mouse_column_2 * 79;
 
-//static unsigned int mouse_x = 0, mouse_y = 0;
+//static unsigned int mouse_x = 0, mouse_y = 0, mouse_status = -1, old_mouse_status = -1;
 
 class DOSForms
 {

@@ -462,15 +462,20 @@ void DOSForms::DrawButton( const FormButton button )
         mouse.hideCursor();
     }
 
-    // draw dropshadow first
+    // draw drop shadow first
     _settextcolor( button.color().foreground );
-    _setbkcolor( 0 );
-    _settextwindow( button.coordinates().column + 1, button.coordinates().row + 1, button.coordinates().row + button.coordinates().height + 1, button.coordinates().column + button.coordinates().width + 1 );
+    if ( button.color().background != BG_BLACK && m_form_color.background != BG_BLACK ) {
+        _setbkcolor( BG_BLACK );
+    }
+    else if ( button.color().background != BG_DARK_GRAY && m_form_color.background != BG_DARK_GRAY ) {
+        _setbkcolor( BG_DARK_GRAY );
+    }
+    _settextwindow( button.coordinates().row + 1, button.coordinates().column + 1, button.coordinates().end_row + 1, button.coordinates().end_column + 1 );
     _clearscreen( _GWINDOW );
 
     // draw button
     _setbkcolor( button.color().background );
-    _settextwindow( button.coordinates().column, button.coordinates().row, button.coordinates().row + button.coordinates().height, button.coordinates().column + button.coordinates().width );
+    _settextwindow( button.coordinates().row, button.coordinates().column, button.coordinates().end_row, button.coordinates().end_column );
     _clearscreen( _GWINDOW );
 
     _settextwindow( 1, 1, m_text_columns, m_text_rows );
@@ -479,7 +484,7 @@ void DOSForms::DrawButton( const FormButton button )
     // center column formula:   starting column number + ( button width - length of text ) / 2
     // center row formula:      button row number + ( button height + text height ) / 2
     short text_x = button.coordinates().column + ( button.coordinates().width - strlen( button.label() ) ) / 2;
-    short text_y = button.coordinates().row + ( button.coordinates().height + 1 ) / 2;
+    short text_y = button.coordinates().row + ( button.coordinates().height ) / 2;
     _settextposition( text_y, text_x );
     _outtext( button.label() );
 

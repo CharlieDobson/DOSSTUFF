@@ -15,13 +15,13 @@ class FormButton
 
 public:
     FormButton( const forms_colors_t color, const window_coordinates_t coordinates, char* label );
-    FormButton( const foreground_colors_t foreground, const background_colors_t background, const short column, const short row, const short width, const short height, char* label );
+    FormButton( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, char* label );
     FormButton( const FormButton& button );
     ~FormButton( void );
 
     // operators
     FormButton& operator=( const FormButton& button );
-    int operator==( const FormButton& button );
+    boolean operator==( const FormButton& button );
     
     // accessors
     forms_colors_t color( void ) const;
