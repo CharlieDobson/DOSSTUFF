@@ -30,6 +30,7 @@ public:
 
     // mutators
     void color( const forms_colors_t color );
+    void color( const foreground_colors_t foreground, const background_colors_t background );
     void coordinates( const window_coordinates_t coordinates );
     void label( const char* label );
 };

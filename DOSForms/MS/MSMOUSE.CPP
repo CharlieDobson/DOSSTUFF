@@ -75,7 +75,12 @@ unsigned int msmouse::xPosition( void ) const
         return UINT_MAX;
     }
 
-    return m_x_position;
+    if ( m_cols_max == 40 ) {
+        return m_x_position / 16;
+    }
+    else {
+        return m_x_position / 8;
+    }
 }
 
 unsigned int msmouse::yPosition( void ) const
@@ -84,7 +89,7 @@ unsigned int msmouse::yPosition( void ) const
         return UINT_MAX;
     }
 
-    return m_y_position;
+    return m_y_position / 8;
 }
 
 void msmouse::cursorPosition( const unsigned int x, const unsigned int y )
@@ -96,8 +101,13 @@ void msmouse::cursorPosition( const unsigned int x, const unsigned int y )
     REGS regs;
 
     regs.x.ax = 0x0004;
-    regs.x.cx = x;
-    regs.x.dx = y;
+    if ( m_cols_max == 40 ) {
+        regs.x.cx = x * 16;
+    }
+    else {
+        regs.x.cx = x * 8;
+    }
+    regs.x.dx = y * 8;
     int86( mouseint, &regs, &regs );
     m_x_position = x;
     m_y_position = y;
@@ -178,8 +188,13 @@ int msmouse::status( unsigned int *x, unsigned int *y )
     int86( mouseint, &regs, &regs );
     m_x_position = regs.x.cx;
     m_y_position = regs.x.dx;
-    x = (unsigned int*)m_x_position;
-    y = (unsigned int*)m_y_position;
+    if ( m_cols_max == 40 ) {
+        x = (unsigned int*)( m_x_position / 16 );
+    }
+    else {
+        x = (unsigned int*)( m_x_position / 8 );
+    }
+    y = (unsigned int*)( m_y_position / 8 );
     return (int)regs.x.bx;
 }
 
@@ -210,8 +225,13 @@ int msmouse::getButtonPress( int *button, unsigned int *x_position, unsigned int
     regs.x.bx = (unsigned int)button;
     int86( mouseint, &regs, &regs );
     button = (int*)regs.x.bx;
-    x_position = (unsigned int*)regs.x.cx;
-    y_position = (unsigned int*)regs.x.dx;
+    if ( m_cols_max == 40 ) {
+        x_position = (unsigned int*)( regs.x.cx / 16 );
+    }
+    else {
+        x_position = (unsigned int*)( regs.x.cx / 8 );
+    }
+    y_position = (unsigned int*)( regs.x.dx / 8 );
     return (int)regs.x.ax;
 }
 
@@ -242,8 +262,13 @@ int msmouse::getButtonRelease( int *button, unsigned int *x_position, unsigned i
     regs.x.bx = (unsigned int)button;
     int86( mouseint, &regs, &regs );
     button = (int*)regs.x.bx;
-    x_position = (unsigned int*)regs.x.cx;
-    y_position = (unsigned int*)regs.x.dx;
+    if ( m_cols_max == 40 ) {
+        x_position = (unsigned int*)( regs.x.cx / 16 );
+    }
+    else {
+        x_position = (unsigned int*)( regs.x.cx / 8 );
+    }
+    y_position = (unsigned int*)( regs.x.dx / 8 );
     return (int)regs.x.ax;
 }
 
@@ -264,8 +289,14 @@ void msmouse::setAreax( const unsigned int min, const unsigned int max )
     REGS regs;
     
     regs.x.ax = 0x0007;
-    regs.x.cx = min;
-    regs.x.dx = max;
+    if ( m_cols_max == 40 ) {
+        regs.x.cx = min * 16;
+        regs.x.dx = max * 16;
+    }
+    else {
+        regs.x.cx = min * 8;
+        regs.x.dx = max * 8;
+    }
     int86( mouseint, &regs, &regs );
 }
 
@@ -282,8 +313,8 @@ void msmouse::setAreay( const unsigned int min, const unsigned int max )
     REGS regs;
     
     regs.x.ax = 0x0008;
-    regs.x.cx = min;
-    regs.x.dx = max;
+    regs.x.cx = min * 8;
+    regs.x.dx = max * 8;
     int86( mouseint, &regs, &regs );
 }
 
@@ -300,12 +331,18 @@ void msmouse::setArea( const unsigned int x_min, const unsigned int x_max, const
     REGS regs;
 
     regs.x.ax = 0x0007;
-    regs.x.cx = x_min;
-    regs.x.dx = x_max;
+    if ( m_cols_max == 40 ) {
+        regs.x.cx = x_min * 16;
+        regs.x.dx = x_max * 16;
+    }
+    else {
+        regs.x.cx = x_min * 8;
+        regs.x.dx = x_max * 8;
+    }
     int86( mouseint, &regs, &regs );
     regs.x.ax = 0x0008;
-    regs.x.cx = y_min;
-    regs.x.dx = y_max;
+    regs.x.cx = y_min * 8;
+    regs.x.dx = y_max * 8;
     int86( mouseint, &regs, &regs );
 }
 
@@ -339,7 +376,7 @@ void msmouse::movementSpeed( const unsigned int x, const unsigned int y )
     int86( mouseint, &regs, &regs );
 }
 
-void msmouse::hidePointerInRegion( const unsigned int left, const unsigned int top, const unsigned int right, const unsigned int bottom )
+void msmouse::hidePointerInRegion( const unsigned int min_x, const unsigned int min_y, const unsigned int max_x, const unsigned int max_y )
 {
     if ( !m_inited ) {
         return;
@@ -348,10 +385,16 @@ void msmouse::hidePointerInRegion( const unsigned int left, const unsigned int t
     REGS regs;
     
     regs.x.ax = 0x0010;
-    regs.x.cx = left;
-    regs.x.dx = top;
-    regs.x.si = right;
-    regs.x.di = bottom;
+    if ( m_cols_max == 40 ) {
+        regs.x.cx = min_x * 16;
+        regs.x.si = max_x * 16;
+    }
+    else {
+        regs.x.cx = min_x * 8;
+        regs.x.si = max_x * 8;
+    }
+    regs.x.dx = min_y * 8;
+    regs.x.di = max_y * 8;
     int86( mouseint, &regs, &regs );
     m_cursor_hidden = 1;
 }

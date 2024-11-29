@@ -164,12 +164,35 @@ dialog_buttons_t FormMessageWindow::buttons( void ) const
 
 void FormMessageWindow::color( const forms_colors_t color )
 {
-    m_color = color;
+    if ( color.foreground != FG_NO_COLOR || color.background != BG_NO_COLOR ) {
+        m_color = color;
+    }
+}
+
+void FormMessageWindow::color( const foreground_colors_t foreground, const background_colors_t background )
+{
+    if ( foreground != FG_NO_COLOR ) {
+        m_color.foreground = foreground;
+    }
+
+    if ( background != BG_NO_COLOR ) {
+        m_color.background = background;
+    }
 }
 
 void FormMessageWindow::coordinates( const window_coordinates_t coordinates )
 {
     m_coordinates = coordinates;
+}
+
+void FormMessageWindow::coordinates( const short row, const short column, const short height, const short width )
+{
+    m_coordinates.row = row;
+    m_coordinates.column = column;
+    m_coordinates.height = height;
+    m_coordinates.width = width;
+    m_coordinates.end_row = row + height - 1;
+    m_coordinates.end_column = column + width - 1;
 }
 
 void FormMessageWindow::title( const char* title )

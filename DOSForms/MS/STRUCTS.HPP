@@ -14,7 +14,7 @@ enum dialog_buttons_t
     DB_INSTALLCANCEL
 };
 
-enum return_button_t
+enum button_t
 {
     BUTTON_OK = 1,
     BUTTON_CANCEL = 2,
@@ -91,12 +91,12 @@ struct forms_colors_t
 
 struct window_coordinates_t
 {
-    short column;       // x position
     short row;          // y position
-    short width;        // number of columns to span
+    short column;       // x position
     short height;       // number of rows to span
-    short end_column;   // ending column number, should be equal to column + width
+    short width;        // number of columns to span
     short end_row;      // ending row number, should be equal to row + height
+    short end_column;   // ending column number, should be equal to column + width
 };
 
 enum boolean

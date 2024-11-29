@@ -2,10 +2,10 @@
 
 #include "dosforms.hpp"
 
-const unsigned int _HIDE_KB_CURSOR = 0x2000;
-const unsigned int _SHOW_KB_CURSOR = 0x0707;
+const unsigned int hide_keyboard_cursor = 0x2000;
+const unsigned int show_keyboard_cursor = 0x0707;
 const unsigned short max_dosforms_title = 35;
-static short dosforms_inited = 0;
+static boolean dosforms_inited = FALSE;
 
 DOSForms::DOSForms( void )
 {
@@ -16,6 +16,7 @@ DOSForms::DOSForms( void )
     videoconfig vc;
     _getvideoconfig( &vc );
 
+    isFormOpen = FALSE;
     m_form_color.foreground = FG_BLUE;
     m_form_color.background = BG_WHITE;
     m_title_color.foreground = FG_NO_COLOR;
@@ -35,7 +36,7 @@ DOSForms::DOSForms( void )
     m_screen_buffer[0] = '\0';
     memset( &m_save_window, 0, sizeof( window_coordinates_t ) );
     sprintf( m_mouse_control, "[%c]", 196 ); // 196 = ASCII "em dash" ─
-    dosforms_inited = 1;
+    dosforms_inited = TRUE;
 }
 
 DOSForms::DOSForms( const forms_colors_t FormColor )
@@ -47,6 +48,7 @@ DOSForms::DOSForms( const forms_colors_t FormColor )
     videoconfig vc;
     _getvideoconfig( &vc );
 
+    isFormOpen = FALSE;
     m_form_color = FormColor;
     m_title_color.foreground = FG_NO_COLOR;
     m_title_color.background = BG_NO_COLOR;
@@ -65,7 +67,7 @@ DOSForms::DOSForms( const forms_colors_t FormColor )
     m_screen_buffer[0] = '\0';
     memset( &m_save_window, 0, sizeof( window_coordinates_t ) );
     sprintf( m_mouse_control, "[%c]", 196 ); // 196 = ASCII "em dash" ─
-    dosforms_inited = 1;
+    dosforms_inited = TRUE;
 }
 
 DOSForms::DOSForms( const forms_colors_t FormColor, const forms_colors_t TitleColor, const char* TitleText )
@@ -77,6 +79,7 @@ DOSForms::DOSForms( const forms_colors_t FormColor, const forms_colors_t TitleCo
     videoconfig vc;
     _getvideoconfig( &vc );
 
+    isFormOpen = FALSE;
     m_form_color = FormColor;
     m_title_color = TitleColor;
     m_status_bar_color.foreground = FG_NO_COLOR;
@@ -94,7 +97,7 @@ DOSForms::DOSForms( const forms_colors_t FormColor, const forms_colors_t TitleCo
     m_screen_buffer[0] = '\0';
     memset( &m_save_window, 0, sizeof( window_coordinates_t ) );
     sprintf( m_mouse_control, "[%c]", 196 ); // 196 = ASCII "em dash" ─
-    dosforms_inited = 1;
+    dosforms_inited = TRUE;
 }
 
 DOSForms::DOSForms( const forms_colors_t FormColor, const forms_colors_t TitleColor, const char* TitleText, const forms_colors_t StatusBarColor, const char* StatusBarText )
@@ -106,6 +109,7 @@ DOSForms::DOSForms( const forms_colors_t FormColor, const forms_colors_t TitleCo
     videoconfig vc;
     _getvideoconfig( &vc );
 
+    isFormOpen = FALSE;
     m_form_color = FormColor;
     m_title_color = TitleColor;
     m_status_bar_color = StatusBarColor;
@@ -122,7 +126,7 @@ DOSForms::DOSForms( const forms_colors_t FormColor, const forms_colors_t TitleCo
     m_screen_buffer[0] = '\0';
     memset( &m_save_window, 0, sizeof( window_coordinates_t ) );
     sprintf( m_mouse_control, "[%c]", 196 ); // 196 = ASCII "em dash" ─
-    dosforms_inited = 1;
+    dosforms_inited = TRUE;
 }
 
 DOSForms::~DOSForms( void )
@@ -136,7 +140,7 @@ DOSForms::~DOSForms( void )
     _settextcursor( 0x0707 );
     _clearscreen( _GCLEARSCREEN );
 
-    dosforms_inited = 0;
+    dosforms_inited = FALSE;
 }
 
 /**************************************************
@@ -194,6 +198,11 @@ void DOSForms::SaveWindow( const short x, const short y, const short width, cons
             m_screen_buffer[( i * width + j ) * 2 + 1] = regs.h.ah; // attribute
         }
     }
+}
+
+void DOSForms::SaveWindow( const window_coordinates_t coordinates )
+{
+    SaveWindow( coordinates.column, coordinates.row, coordinates.width, coordinates.height );
 }
 
 void DOSForms::RestoreWindow( void )
@@ -261,6 +270,42 @@ void DOSForms::TitleColor( const forms_colors_t Color )
 
     m_title_color = Color;
 
+    if ( !isFormOpen ) {
+        return;
+    }
+
+    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
+        mouse.hideCursor();
+    }
+
+    _settextcolor( m_title_color.foreground );
+    _setbkcolor( m_title_color.background );
+    _settextwindow( 1, 1, 1, m_text_columns );
+    _clearscreen( _GWINDOW );
+    _settextwindow( 1, 1, m_text_rows, m_text_columns );
+
+    if ( mouse.isInited() && mouse.isCursorHidden() ) {
+        mouse.showCursor();
+    }
+
+    if ( m_title_text[0] != '\0' ) {
+        TitleText( m_title_text );
+    }
+}
+
+void DOSForms::TitleColor( const foreground_colors_t foreground, const background_colors_t background )
+{
+    if ( foreground == FG_NO_COLOR || background == BG_NO_COLOR ) {
+        return;
+    }
+
+    m_title_color.foreground = foreground;
+    m_title_color.background = background;
+
+    if ( !isFormOpen ) {
+        return;
+    }
+
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
         mouse.hideCursor();
     }
@@ -288,6 +333,10 @@ void DOSForms::TitleText( const char* Text )
 
     strcpy( m_title_text, Text );
 
+    if ( !isFormOpen ) {
+        return;
+    }
+
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
         mouse.hideCursor();
     }
@@ -310,6 +359,42 @@ void DOSForms::StatusBarColor( const forms_colors_t Color )
     }
     
     m_status_bar_color = Color;
+
+    if ( !isFormOpen ) {
+        return;
+    }
+
+    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
+        mouse.hideCursor();
+    }
+
+    _settextcolor( m_status_bar_color.foreground );
+    _setbkcolor( m_status_bar_color.background );
+    _settextwindow( m_text_rows, 1, m_text_rows, m_text_columns );
+    _clearscreen( _GWINDOW );
+    _settextwindow( 1, 1, m_text_rows, m_text_columns );
+
+    if ( mouse.isInited() && mouse.isCursorHidden() ) {
+        mouse.showCursor();
+    }
+
+    if ( m_status_bar_text[0] != '\0' ) {
+        StatusBarText( m_status_bar_text );
+    }
+}
+
+void DOSForms::StatusBarColor( const foreground_colors_t foreground, const background_colors_t background )
+{
+    if ( foreground == FG_NO_COLOR || background == BG_NO_COLOR ) {
+        return;
+    }
+
+    m_status_bar_color.foreground = foreground;
+    m_status_bar_color.background = background;
+
+    if ( !isFormOpen ) {
+        return;
+    }
 
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
         mouse.hideCursor();
@@ -338,6 +423,10 @@ void DOSForms::StatusBarText( const char* Text )
 
     strcpy( m_status_bar_text, Text );
 
+    if ( !isFormOpen ) {
+        return;
+    }
+
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
         mouse.hideCursor();
     }
@@ -361,6 +450,7 @@ void DOSForms::OpenForm( void )
         mouse.hideCursor();
     }
 
+    isFormOpen = TRUE;
     _setvideomode( _TEXTC80 );
     _settextcolor( m_form_color.foreground );
     _setbkcolor( m_form_color.background );
@@ -401,6 +491,14 @@ void DOSForms::RemoveTitleBar( void )
         return;
     }
 
+    m_title_color.foreground = FG_NO_COLOR;
+    m_title_color.background = BG_NO_COLOR;
+    m_title_text[0] = '\0';
+
+    if ( !isFormOpen ) {
+        return;
+    }
+
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
         mouse.hideCursor();
     }
@@ -410,10 +508,6 @@ void DOSForms::RemoveTitleBar( void )
     _settextwindow( 1, 1, 1, m_text_columns );
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
-
-    m_title_color.foreground = FG_NO_COLOR;
-    m_title_color.background = BG_NO_COLOR;
-    m_title_text[0] = '\0';
     
     if ( mouse.isInited() ) {
         _settextposition( 1, 1 );
@@ -433,6 +527,14 @@ void DOSForms::RemoveStatusBar( void )
         return;
     }
 
+    m_status_bar_color.foreground = FG_NO_COLOR;
+    m_status_bar_color.background = BG_NO_COLOR;
+    m_status_bar_text[0] = '\0';
+
+    if ( !isFormOpen ) {
+        return;
+    }
+
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
         mouse.hideCursor();
     }
@@ -443,10 +545,6 @@ void DOSForms::RemoveStatusBar( void )
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
 
-    m_status_bar_color.foreground = FG_NO_COLOR;
-    m_status_bar_color.background = BG_NO_COLOR;
-    m_status_bar_text[0] = '\0';
-
     if ( mouse.isInited() && mouse.isCursorHidden() ) {
         mouse.showCursor();
     }
@@ -454,7 +552,11 @@ void DOSForms::RemoveStatusBar( void )
 
 void DOSForms::DrawButton( const FormButton button )
 {
-    if ( button.color().foreground == FG_NO_COLOR || button.coordinates().column == 0 || button.label() == NULL ) {
+    if ( button.color().foreground == FG_NO_COLOR || button.coordinates().column < 1 || button.coordinates().row < 1 ) {
+        return;
+    }
+
+    if ( !isFormOpen ) {
         return;
     }
 
@@ -482,9 +584,9 @@ void DOSForms::DrawButton( const FormButton button )
 
     // center text on button
     // center column formula:   starting column number + ( button width - length of text ) / 2
-    // center row formula:      button row number + ( button height + text height ) / 2
+    // center row formula:      button row number + button height / 2
     short text_x = button.coordinates().column + ( button.coordinates().width - strlen( button.label() ) ) / 2;
-    short text_y = button.coordinates().row + ( button.coordinates().height ) / 2;
+    short text_y = button.coordinates().row + button.coordinates().height / 2;
     _settextposition( text_y, text_x );
     _outtext( button.label() );
 
@@ -493,8 +595,34 @@ void DOSForms::DrawButton( const FormButton button )
     }
 }
 
+/*
+button_t DOSForms::MessageBox( const FormMessageWindow message )
+{
+    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
+        mouse.hideCursor();
+    }
+
+    button_t return_button;
+
+    SaveWindow( message.coordinates() );
+
+    _settextcolor( message.color().foreground );
+    _setbkcolor( message.color().background );
+    _settextwindow( message.coordinates().row, message.coordinates().column, message.coordinates().end_row, message.coordinates().end_column );
+    _clearscreen( _GWINDOW );
 
 
+    // code here
+
+    RestoreWindow();
+
+    if ( mouse.isInited() && mouse.isCursorHidden() ) {
+        mouse.showCursor();
+    }
+
+    return button;
+}
+*/
 
 /*
 // message box

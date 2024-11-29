@@ -53,7 +53,7 @@ public:
     void setArea( const unsigned int x_min, const unsigned int x_max, const unsigned int y_min, const unsigned int y_max );
     void readCounters( int *x, int *y );
     void movementSpeed( const unsigned int x, const unsigned int y );
-    void hidePointerInRegion( const unsigned int left, const unsigned int top, const unsigned int right, const unsigned int bottom );
+    void hidePointerInRegion( const unsigned int min_x, const unsigned int min_y, const unsigned int max_x, const unsigned int max_y );
 };
 
 #endif  // MSC or WATCOMC

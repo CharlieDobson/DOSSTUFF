@@ -34,7 +34,9 @@ public:
 
     // mutators
     void color( const forms_colors_t color );
+    void color( const foreground_colors_t foreground, const background_colors_t background );
     void coordinates( const window_coordinates_t coordinates );
+    void coordinates( const short row, const short column, const short height, const short width );
     void title( const char* title );
     void message( const char* message );
     void buttons( const dialog_buttons_t buttons );
