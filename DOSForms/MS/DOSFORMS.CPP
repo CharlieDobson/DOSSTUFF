@@ -176,33 +176,36 @@ void DOSForms::ClearRow( const unsigned short row )
 
 void DOSForms::SaveWindow( const short x, const short y, const short width, const short height )
 {
+    window_coordinates_t temp;
+    temp.column = x;
+    temp.row = y;
+    temp.width = width;
+    temp.height = height;
+
+    SaveWindow( temp );
+}
+
+void DOSForms::SaveWindow( const window_coordinates_t coordinates )
+{
     if ( m_screen_buffer[0] != '\0' ) {
         return;
     }
 
     REGS regs;
-    m_save_window.row = y;
-    m_save_window.column = x;
-    m_save_window.width = width;
-    m_save_window.height = height;
+    m_save_window = coordinates;
 
-    for ( short i = 0; i < height; ++i ) {
+    for ( short i = 0; i < m_save_window.height; ++i ) {
         regs.h.ah = 0x08; // BIOS function to read character and attribute
         regs.h.bh = 0; // page number
 
-        for ( short j = 0; j < width; ++j ) {
-            regs.h.dh = y + i; // row
-            regs.h.dl = x + j; // column
+        for ( short j = 0; j < m_save_window.width; ++j ) {
+            regs.h.dh = m_save_window.row + i; // row
+            regs.h.dl = m_save_window.column + j; // column
             int86( 0x10, &regs, &regs );
-            m_screen_buffer[( i * width + j ) * 2] = regs.h.al; // character
-            m_screen_buffer[( i * width + j ) * 2 + 1] = regs.h.ah; // attribute
+            m_screen_buffer[( i * m_save_window.width + j ) * 2] = regs.h.al; // character
+            m_screen_buffer[( i * m_save_window.width + j ) * 2 + 1] = regs.h.ah; // attribute
         }
     }
-}
-
-void DOSForms::SaveWindow( const window_coordinates_t coordinates )
-{
-    SaveWindow( coordinates.column, coordinates.row, coordinates.width, coordinates.height );
 }
 
 void DOSForms::RestoreWindow( void )
@@ -596,13 +599,13 @@ void DOSForms::DrawButton( const FormButton button )
 }
 
 /*
-button_t DOSForms::MessageBox( const FormMessageWindow message )
+button_t DOSForms::MessageBox( const FormMessage message )
 {
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
         mouse.hideCursor();
     }
 
-    button_t return_button;
+    button_t button_id;
 
     SaveWindow( message.coordinates() );
 
@@ -620,7 +623,7 @@ button_t DOSForms::MessageBox( const FormMessageWindow message )
         mouse.showCursor();
     }
 
-    return button;
+    return button_id;
 }
 */
 

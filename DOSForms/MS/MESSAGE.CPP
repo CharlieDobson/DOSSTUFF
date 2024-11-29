@@ -2,7 +2,7 @@
 
 #include "message.hpp"
 
-FormMessageWindow::FormMessageWindow( const forms_colors_t color, const window_coordinates_t coordinates, const char* title, const char* message, const dialog_buttons_t buttons )
+FormMessage::FormMessage( const forms_colors_t color, const window_coordinates_t coordinates, const char* title, const char* message, const dialog_buttons_t buttons )
 {
     m_color = color;
     m_coordinates = coordinates;
@@ -23,7 +23,7 @@ FormMessageWindow::FormMessageWindow( const forms_colors_t color, const window_c
     }
 }
 
-FormMessageWindow::FormMessageWindow( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, const char* title, const char* message, const dialog_buttons_t buttons )
+FormMessage::FormMessage( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, const char* title, const char* message, const dialog_buttons_t buttons )
 {
     m_color.foreground = foreground;
     m_color.background = background;
@@ -50,7 +50,7 @@ FormMessageWindow::FormMessageWindow( const foreground_colors_t foreground, cons
     }
 }
 
-FormMessageWindow::FormMessageWindow( const FormButton& messageWindow )
+FormMessage::FormMessage( const FormButton& messageWindow )
 {
     m_color = messageWindow.color();
     m_coordinates = messageWindow.coordinates();
@@ -62,13 +62,13 @@ FormMessageWindow::FormMessageWindow( const FormButton& messageWindow )
     strcpy( m_message, messageWindow.message() );
 }
 
-FormMessageWindow::~FormMessageWindow( void )
+FormMessage::~FormMessage( void )
 {
     delete[] m_message;
     delete[] m_title;
 }
 
-FormMessageWindow& FormMessageWindow::operator=( const FormMessageWindow& messageWindow )
+FormMessage& FormMessage::operator=( const FormMessage& messageWindow )
 {
     if ( this == &messageWindow ) {
         return *this;
@@ -88,7 +88,7 @@ FormMessageWindow& FormMessageWindow::operator=( const FormMessageWindow& messag
     return *this;
 }
 
-boolean FormMessageWindow::operator==( const FormMessageWindow& messageWindow )
+boolean FormMessage::operator==( const FormMessage& messageWindow )
 {
     if ( m_color.foreground != messageWindow.color().foreground ) {
         return FALSE;
@@ -137,39 +137,39 @@ boolean FormMessageWindow::operator==( const FormMessageWindow& messageWindow )
     return TRUE;
 }
 
-forms_colors_t FormMessageWindow::color( void ) const
+forms_colors_t FormMessage::color( void ) const
 {
     return m_color;
 }
 
-window_coordinates_t FormMessageWindow::coordinates( void ) const
+window_coordinates_t FormMessage::coordinates( void ) const
 {
     return m_coordinates;
 }
 
-char* FormMessageWindow::title( void ) const
+char* FormMessage::title( void ) const
 {
     return m_title;
 }
 
-char* FormMessageWindow::message( void ) const
+char* FormMessage::message( void ) const
 {
     return m_message;
 }
 
-dialog_buttons_t FormMessageWindow::buttons( void ) const
+dialog_buttons_t FormMessage::buttons( void ) const
 {
     return m_buttons;
 }
 
-void FormMessageWindow::color( const forms_colors_t color )
+void FormMessage::color( const forms_colors_t color )
 {
     if ( color.foreground != FG_NO_COLOR || color.background != BG_NO_COLOR ) {
         m_color = color;
     }
 }
 
-void FormMessageWindow::color( const foreground_colors_t foreground, const background_colors_t background )
+void FormMessage::color( const foreground_colors_t foreground, const background_colors_t background )
 {
     if ( foreground != FG_NO_COLOR ) {
         m_color.foreground = foreground;
@@ -180,12 +180,12 @@ void FormMessageWindow::color( const foreground_colors_t foreground, const backg
     }
 }
 
-void FormMessageWindow::coordinates( const window_coordinates_t coordinates )
+void FormMessage::coordinates( const window_coordinates_t coordinates )
 {
     m_coordinates = coordinates;
 }
 
-void FormMessageWindow::coordinates( const short row, const short column, const short height, const short width )
+void FormMessage::coordinates( const short row, const short column, const short height, const short width )
 {
     m_coordinates.row = row;
     m_coordinates.column = column;
@@ -195,7 +195,7 @@ void FormMessageWindow::coordinates( const short row, const short column, const 
     m_coordinates.end_column = column + width - 1;
 }
 
-void FormMessageWindow::title( const char* title )
+void FormMessage::title( const char* title )
 {
     strncpy( m_title, title, m_coordinates.width / 2 );
 
@@ -204,7 +204,7 @@ void FormMessageWindow::title( const char* title )
     }
 }
 
-void FormMessageWindow::message( const char* message )
+void FormMessage::message( const char* message )
 {
     strncpy( m_message, message, 200 );
 
@@ -213,7 +213,7 @@ void FormMessageWindow::message( const char* message )
     }
 }
 
-void FormMessageWindow::buttons( const dialog_buttons_t buttons )
+void FormMessage::buttons( const dialog_buttons_t buttons )
 {
     m_buttons = buttons;
 }

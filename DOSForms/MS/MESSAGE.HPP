@@ -7,7 +7,7 @@
 #include <string.h>
 
 
-class FormMessageWindow
+class FormMessage
 {
     forms_colors_t m_color;
     window_coordinates_t m_coordinates;
@@ -16,14 +16,14 @@ class FormMessageWindow
     dialog_buttons_t m_buttons;
 
 public:
-    FormMessageWindow( const forms_colors_t color, const window_coordinates_t coordinates, const char* title, const char* message, const dialog_buttons_t buttons );
-    FormMessageWindow( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, const char* title, const char* message, const dialog_buttons_t buttons );
-    FormMessageWindow( const FormMessageWindow& messageWindow );
-    ~FormMessageWindow( void );
+    FormMessage( const forms_colors_t color, const window_coordinates_t coordinates, const char* title, const char* message, const dialog_buttons_t buttons );
+    FormMessage( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, const char* title, const char* message, const dialog_buttons_t buttons );
+    FormMessage( const FormMessage& messageWindow );
+    ~FormMessage( void );
 
     // operators
-    FormMessageWindow& operator=( const FormMessageWindow& messageWindow );
-    boolean operator==( const FormMessageWindow& messageWindow );
+    FormMessage& operator=( const FormMessage& messageWindow );
+    boolean operator==( const FormMessage& messageWindow );
     
     // accessors
     forms_colors_t color( void ) const;
