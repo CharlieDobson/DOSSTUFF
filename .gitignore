@@ -1,0 +1,15 @@
+*.obj
+*.err
+*.exe
+*.com
+*.lk1
+*.mk1
+*.map
+*.mk
+*.sym
+*.tgt
+*.mak
+*.sbr
+*.vcw
+*.wsp
+*.wpj
