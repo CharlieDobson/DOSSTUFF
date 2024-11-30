@@ -18,12 +18,12 @@ class FormMessage
 public:
     FormMessage( const forms_colors_t color, const window_coordinates_t coordinates, const char* title, const char* message, const dialog_buttons_t buttons );
     FormMessage( const foreground_colors_t foreground, const background_colors_t background, const short row, const short column, const short height, const short width, const char* title, const char* message, const dialog_buttons_t buttons );
-    FormMessage( const FormMessage& messageWindow );
+    FormMessage( const FormMessage& formMessage );
     ~FormMessage( void );
 
     // operators
-    FormMessage& operator=( const FormMessage& messageWindow );
-    boolean operator==( const FormMessage& messageWindow );
+    FormMessage& operator=( const FormMessage& formMessage );
+    boolean operator==( const FormMessage& formMessage );
     
     // accessors
     forms_colors_t color( void ) const;

@@ -50,16 +50,16 @@ FormMessage::FormMessage( const foreground_colors_t foreground, const background
     }
 }
 
-FormMessage::FormMessage( const FormButton& messageWindow )
+FormMessage::FormMessage( const FormMessage& formMessage )
 {
-    m_color = messageWindow.color();
-    m_coordinates = messageWindow.coordinates();
-    m_title = new char[strlen( messageWindow.title() + 1 )];
-    m_message = new char[strlen( messageWindow.message() + 1 )];
-    m_buttons = messageWindow.buttons();
+    m_color = formMessage.color();
+    m_coordinates = formMessage.coordinates();
+    m_title = new char[strlen( formMessage.title() + 1 )];
+    m_message = new char[strlen( formMessage.message() + 1 )];
+    m_buttons = formMessage.buttons();
 
-    strcpy( m_title, messageWindow.title() );
-    strcpy( m_message, messageWindow.message() );
+    strcpy( m_title, formMessage.title() );
+    strcpy( m_message, formMessage.message() );
 }
 
 FormMessage::~FormMessage( void )
@@ -68,69 +68,69 @@ FormMessage::~FormMessage( void )
     delete[] m_title;
 }
 
-FormMessage& FormMessage::operator=( const FormMessage& messageWindow )
+FormMessage& FormMessage::operator=( const FormMessage& formMessage )
 {
-    if ( this == &messageWindow ) {
+    if ( this == &formMessage ) {
         return *this;
     }
 
-    m_color = messageWindow.color();
-    m_coordinates = messageWindow.coordinates();
+    m_color = formMessage.color();
+    m_coordinates = formMessage.coordinates();
     delete[] m_title;
-    m_title = new char[strlen( messageWindow.title() ) + 1];
+    m_title = new char[strlen( formMessage.title() ) + 1];
     delete[] m_message;
-    m_message = new char[strlen( messageWindow.message() ) + 1];
-    m_buttons = messageWindow.buttons();
+    m_message = new char[strlen( formMessage.message() ) + 1];
+    m_buttons = formMessage.buttons();
 
-    strcpy( m_label, messageWindow.title() );
-    strcpy( m_message, messageWindow.message() );
+    strcpy( m_title, formMessage.title() );
+    strcpy( m_message, formMessage.message() );
 
     return *this;
 }
 
-boolean FormMessage::operator==( const FormMessage& messageWindow )
+boolean FormMessage::operator==( const FormMessage& formMessage )
 {
-    if ( m_color.foreground != messageWindow.color().foreground ) {
+    if ( m_color.foreground != formMessage.color().foreground ) {
         return FALSE;
     }
 
-    if ( m_color.background != messageWindow.color().background ) {
+    if ( m_color.background != formMessage.color().background ) {
         return FALSE;
     }
 
-    if ( m_coordinates.row != messageWindow.coordinates().row ) {
+    if ( m_coordinates.row != formMessage.coordinates().row ) {
         return FALSE;
     }
 
-    if ( m_coordinates.column != messageWindow.coordinates().column ) {
+    if ( m_coordinates.column != formMessage.coordinates().column ) {
         return FALSE;
     }
 
-    if ( m_coordinates.height != messageWindow.coordinates().height ) {
+    if ( m_coordinates.height != formMessage.coordinates().height ) {
         return FALSE;
     }
 
-    if ( m_coordinates.width != messageWindow.coordinates().width ) {
+    if ( m_coordinates.width != formMessage.coordinates().width ) {
         return FALSE;
     }
 
-    if ( m_coordinates.end_row != messageWindow.coordinates().end_row ) {
+    if ( m_coordinates.end_row != formMessage.coordinates().end_row ) {
         return FALSE;
     }
 
-    if ( m_coordinates.end_column != messageWindow.coordinates().end_column ) {
+    if ( m_coordinates.end_column != formMessage.coordinates().end_column ) {
         return FALSE;
     }
 
-    if ( strcmp( m_title, messageWindow.title() ) != 0 ) {
+    if ( strcmp( m_title, formMessage.title() ) != 0 ) {
         return FALSE;
     }
 
-    if ( strcmp( m_message, messageWindow.message() ) != 0 ) {
+    if ( strcmp( m_message, formMessage.message() ) != 0 ) {
         return FALSE;
     }
 
-    if ( m_buttons != messageWindow.buttons ) {
+    if ( m_buttons != formMessage.buttons() ) {
         return FALSE;
     }
 

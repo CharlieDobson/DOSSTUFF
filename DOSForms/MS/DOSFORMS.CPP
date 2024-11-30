@@ -598,7 +598,6 @@ void DOSForms::DrawButton( const FormButton button )
     }
 }
 
-/*
 button_t DOSForms::MessageBox( const FormMessage message )
 {
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
@@ -614,7 +613,6 @@ button_t DOSForms::MessageBox( const FormMessage message )
     _settextwindow( message.coordinates().row, message.coordinates().column, message.coordinates().end_row, message.coordinates().end_column );
     _clearscreen( _GWINDOW );
 
-
     // code here
 
     RestoreWindow();
@@ -625,7 +623,6 @@ button_t DOSForms::MessageBox( const FormMessage message )
 
     return button_id;
 }
-*/
 
 /*
 // message box
