@@ -287,7 +287,7 @@ void msmouse::setAreay( const unsigned int min, const unsigned int max )
     int86( mouseint, &regs, &regs );
 }
 
-void msmouse::setArea( const unsigned int x_min, const unsigned int x_max, const unsigned int y_min, const unsigned int y_max )
+void msmouse::setArea( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max )
 {
     if ( !m_inited ) {
         return;
