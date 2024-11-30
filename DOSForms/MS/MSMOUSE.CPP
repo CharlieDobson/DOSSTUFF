@@ -75,12 +75,7 @@ unsigned int msmouse::xPosition( void ) const
         return UINT_MAX;
     }
 
-    if ( m_cols_max == 40 ) {
-        return m_x_position / 16;
-    }
-    else {
-        return m_x_position / 8;
-    }
+    return m_cols_max == 40 ? m_x_position / 16 : m_x_position / 8;
 }
 
 unsigned int msmouse::yPosition( void ) const
@@ -101,12 +96,7 @@ void msmouse::cursorPosition( const unsigned int x, const unsigned int y )
     REGS regs;
 
     regs.x.ax = 0x0004;
-    if ( m_cols_max == 40 ) {
-        regs.x.cx = x * 16;
-    }
-    else {
-        regs.x.cx = x * 8;
-    }
+    regs.x.cx = ( m_cols_max == 40 ) ? x * 16 : x * 8;
     regs.x.dx = y * 8;
     int86( mouseint, &regs, &regs );
     m_x_position = x;
@@ -188,12 +178,7 @@ int msmouse::status( unsigned int *x, unsigned int *y )
     int86( mouseint, &regs, &regs );
     m_x_position = regs.x.cx;
     m_y_position = regs.x.dx;
-    if ( m_cols_max == 40 ) {
-        x = (unsigned int*)( m_x_position / 16 );
-    }
-    else {
-        x = (unsigned int*)( m_x_position / 8 );
-    }
+    x = ( m_cols_max == 40 ) ? (unsigned int*)( m_x_position / 16 ) : (unsigned int*)( m_x_position / 8 );
     y = (unsigned int*)( m_y_position / 8 );
     return (int)regs.x.bx;
 }
@@ -225,12 +210,7 @@ int msmouse::getButtonPress( int *button, unsigned int *x_position, unsigned int
     regs.x.bx = (unsigned int)button;
     int86( mouseint, &regs, &regs );
     button = (int*)regs.x.bx;
-    if ( m_cols_max == 40 ) {
-        x_position = (unsigned int*)( regs.x.cx / 16 );
-    }
-    else {
-        x_position = (unsigned int*)( regs.x.cx / 8 );
-    }
+    x_position = ( m_cols_max == 40 ) ? (unsigned int*)( regs.x.cx / 16 ) : (unsigned int*)( regs.x.cx / 8 );
     y_position = (unsigned int*)( regs.x.dx / 8 );
     return (int)regs.x.ax;
 }
@@ -262,12 +242,7 @@ int msmouse::getButtonRelease( int *button, unsigned int *x_position, unsigned i
     regs.x.bx = (unsigned int)button;
     int86( mouseint, &regs, &regs );
     button = (int*)regs.x.bx;
-    if ( m_cols_max == 40 ) {
-        x_position = (unsigned int*)( regs.x.cx / 16 );
-    }
-    else {
-        x_position = (unsigned int*)( regs.x.cx / 8 );
-    }
+    x_position = ( m_cols_max == 40 ) ? (unsigned int*)( regs.x.cx / 16 ) : (unsigned int*)( regs.x.cx / 8 );
     y_position = (unsigned int*)( regs.x.dx / 8 );
     return (int)regs.x.ax;
 }
@@ -289,14 +264,8 @@ void msmouse::setAreax( const unsigned int min, const unsigned int max )
     REGS regs;
     
     regs.x.ax = 0x0007;
-    if ( m_cols_max == 40 ) {
-        regs.x.cx = min * 16;
-        regs.x.dx = max * 16;
-    }
-    else {
-        regs.x.cx = min * 8;
-        regs.x.dx = max * 8;
-    }
+    regs.x.cx = ( m_cols_max == 40 ) ? min * 16 : min * 8;
+    regs.x.dx = ( m_cols_max == 40 ) ? max * 16 : max * 8;
     int86( mouseint, &regs, &regs );
 }
 
@@ -331,14 +300,8 @@ void msmouse::setArea( const unsigned int x_min, const unsigned int x_max, const
     REGS regs;
 
     regs.x.ax = 0x0007;
-    if ( m_cols_max == 40 ) {
-        regs.x.cx = x_min * 16;
-        regs.x.dx = x_max * 16;
-    }
-    else {
-        regs.x.cx = x_min * 8;
-        regs.x.dx = x_max * 8;
-    }
+    regs.x.cx = ( m_cols_max == 40 ) ? x_min * 16 : x_min * 8;
+    regs.x.dx = ( m_cols_max == 40 ) ? x_max * 16 : x_max * 8;
     int86( mouseint, &regs, &regs );
     regs.x.ax = 0x0008;
     regs.x.cx = y_min * 8;
@@ -376,7 +339,7 @@ void msmouse::movementSpeed( const unsigned int x, const unsigned int y )
     int86( mouseint, &regs, &regs );
 }
 
-void msmouse::hidePointerInRegion( const unsigned int min_x, const unsigned int min_y, const unsigned int max_x, const unsigned int max_y )
+void msmouse::hidePointerInRegion( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max )
 {
     if ( !m_inited ) {
         return;
@@ -385,16 +348,10 @@ void msmouse::hidePointerInRegion( const unsigned int min_x, const unsigned int 
     REGS regs;
     
     regs.x.ax = 0x0010;
-    if ( m_cols_max == 40 ) {
-        regs.x.cx = min_x * 16;
-        regs.x.si = max_x * 16;
-    }
-    else {
-        regs.x.cx = min_x * 8;
-        regs.x.si = max_x * 8;
-    }
-    regs.x.dx = min_y * 8;
-    regs.x.di = max_y * 8;
+    regs.x.cx = ( m_cols_max == 40 ) ? x_min * 16 : x_min * 8;
+    regs.x.si = ( m_cols_max == 40 ) ? x_max * 16 : x_max * 8;
+    regs.x.dx = y_min * 8;
+    regs.x.di = y_max * 8;
     int86( mouseint, &regs, &regs );
     m_cursor_hidden = 1;
 }

@@ -15,9 +15,14 @@
 
 /* 
    The mouse coordinate system is left-handed for both text and graphics modes,
-   with 0,0 being the upper left corner.
+   with 0,0 being the upper left corner.  Note that the DOS graphics library starts at 1,1.
+   
    x = column
    y = row
+
+   Values from interrupt 33 function 3 are in "mickeys".  To convert to view coordinates
+   we must determine the number of columns.  For 40 column displays we divide mickeys by 16
+   and for 80 column displays we divide by 8.
 */
 
 const unsigned int LEFT_BUTTON = 1;
@@ -53,7 +58,7 @@ public:
     void setArea( const unsigned int x_min, const unsigned int x_max, const unsigned int y_min, const unsigned int y_max );
     void readCounters( int *x, int *y );
     void movementSpeed( const unsigned int x, const unsigned int y );
-    void hidePointerInRegion( const unsigned int min_x, const unsigned int min_y, const unsigned int max_x, const unsigned int max_y );
+    void hidePointerInRegion( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max );
 };
 
 #endif  // MSC or WATCOMC
