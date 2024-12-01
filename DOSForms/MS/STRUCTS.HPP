@@ -3,8 +3,6 @@
 #ifndef STRUCTS_HPP
 #define STRUCTS_HPP 1
 
-#if defined( _MSC_VER ) || defined( __WATCOMC__ )
-
 enum dialog_buttons_t
 {
     DB_OK = 0,
@@ -24,6 +22,8 @@ enum button_t
     BUTTON_BACK,
     BUTTON_INSTALL
 };
+
+#if defined( _MSC_VER ) || defined( __WATCOMC__ )
 
 enum foreground_colors_t
 { 
@@ -89,6 +89,8 @@ struct forms_colors_t
     background_colors_t background;
 };
 
+#endif
+
 struct window_coordinates_t
 {
     short row;          // y position
@@ -105,5 +107,4 @@ enum boolean
     TRUE = ( !FALSE )
 };
 
-#endif
 #endif
