@@ -598,6 +598,7 @@ void DOSForms::DrawButton( const FormButton button )
     }
 }
 
+/*
 button_t DOSForms::MessageBox( const FormMessage message )
 {
     if ( mouse.isInited() && !mouse.isCursorHidden() ) {
@@ -623,6 +624,7 @@ button_t DOSForms::MessageBox( const FormMessage message )
 
     return button_id;
 }
+*/
 
 /*
 // message box

@@ -203,7 +203,7 @@ public:
     void RemoveTitleBar( void );
     void RemoveStatusBar( void );
     void DrawButton( const FormButton button );
-    button_t MessageBox( const FormMessage message );
+    //button_t MessageBox( const FormMessage message );
 };
 
 #endif // MSC or WATCOM
