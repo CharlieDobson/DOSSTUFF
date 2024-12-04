@@ -83,13 +83,55 @@ enum background_colors_t
     BG_BRIGHT_WHITE
 };
 
+#elif __SC__
+
+struct videoconfig
+{
+    short numxpixels;
+    short numypixels;
+    short numtextcols;
+    short numtextrows;
+    short numcolors;
+    short bitsperpixel;
+    short numvideopages;
+    short mode;
+    short adapter;
+    short monitor;
+};
+
+enum foreground_colors_t
+{
+    FG_NO_COLOR = -1,
+    FG_BLACK = 0,
+    FG_BLUE = 1,
+    FG_GREEN,
+    FG_CYAN,
+    FG_RED,
+    FG_MAGENTA,
+    FG_BROWN,
+    FG_WHITE
+};
+
+enum background_colors_t
+{
+    BG_NO_COLOR = -1,
+    BG_BLACK = 0,
+    BG_BLUE = 1,
+    BG_GREEN,
+    BG_CYAN,
+    BG_RED,
+    BG_MAGENTA,
+    BG_BROWN,
+    BG_WHITE
+};
+
+#endif
+
 struct forms_colors_t
 {
     foreground_colors_t foreground;
     background_colors_t background;
 };
-
-#endif
 
 struct window_coordinates_t
 {

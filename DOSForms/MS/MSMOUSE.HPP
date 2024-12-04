@@ -4,7 +4,6 @@
 #define MSMOUSE_HPP 1
 
 #ifndef _WINDOWS
-#if defined( _MSC_VER ) || defined( __WATCOMC__ )
 
 #include <dos.h>		// REGS
 #include <limits.h>     // integral limits
@@ -61,6 +60,5 @@ public:
     void hidePointerInRegion( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max );
 };
 
-#endif  // MSC or WATCOMC
 #endif  // _WINDOWS
 #endif  // MSMOUSE_HPP
