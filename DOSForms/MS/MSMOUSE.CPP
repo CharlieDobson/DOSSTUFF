@@ -24,7 +24,6 @@ msmouse::msmouse( void )
     m_y_position = UINT_MAX;
     m_x_position = UINT_MAX;
     m_cols_max = UINT_MAX;
-    m_rows_max = UINT_MAX;
 
     REGS regs;
     
@@ -33,10 +32,20 @@ msmouse::msmouse( void )
     if ( regs.x.ax == 0xffff ) {
         m_inited = 1;
 
+        #if defined( _MSC_VER ) || defined( __WATCOMC__ )
         videoconfig vc;
         _getvideoconfig( &vc );
         m_cols_max = vc.numtextcols;
-        m_rows_max = vc.numtextrows;
+        #elif __SC__
+        if ( disp_inited ) {
+            m_cols_max = disp_numcols;
+        }
+        else {
+            disp_open();
+            m_cols_max = disp_numcols;
+            disp_close();
+        }
+        #endif
         
 	    regs.x.ax = 0x0001;
     	int86( mouseint, &regs, &regs );

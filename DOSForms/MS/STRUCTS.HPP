@@ -97,6 +97,7 @@ struct videoconfig
     short mode;
     short adapter;
     short monitor;
+    short memory;
 };
 
 enum foreground_colors_t
@@ -109,7 +110,15 @@ enum foreground_colors_t
     FG_RED,
     FG_MAGENTA,
     FG_BROWN,
-    FG_WHITE
+    FG_WHITE,
+    FG_DARK_GRAY,
+    FG_LIGHT_BLUE,
+    FG_LIGHT_GREEN,
+    FG_LIGHT_CYAN,
+    FG_LIGHT_RED,
+    FG_LIGHT_MAGENTA,
+    FG_YELLOW,
+    FG_BRIGHT_WHITE
 };
 
 enum background_colors_t
@@ -122,7 +131,15 @@ enum background_colors_t
     BG_RED,
     BG_MAGENTA,
     BG_BROWN,
-    BG_WHITE
+    BG_WHITE,
+    BG_DARK_GRAY,
+    BG_LIGHT_BLUE,
+    BG_LIGHT_GREEN,
+    BG_LIGHT_CYAN,
+    BG_LIGHT_RED,
+    BG_LIGHT_MAGENTA,
+    BG_YELLOW,
+    BG_BRIGHT_WHITE
 };
 
 #endif
@@ -135,18 +152,24 @@ struct forms_colors_t
 
 struct window_coordinates_t
 {
-    short row;          // y position
-    short column;       // x position
+    short row;          // starting y position, a.k.a. the top side
+    short column;       // starting x position, a.k.a. the left side
     short height;       // number of rows to span
     short width;        // number of columns to span
-    short end_row;      // ending row number, should be equal to row + height
-    short end_column;   // ending column number, should be equal to column + width
+    short end_row;      // ending row number, should be equal to row + height, a.k.a. the bottom side
+    short end_column;   // ending column number, should be equal to column + width, a.k.a. the right side
 };
 
 enum boolean
 {
     FALSE = ( 1 == 0 ),
     TRUE = ( !FALSE )
+};
+
+enum keyboard_cursor_t
+{
+    HIDE = 0,
+    SHOW
 };
 
 #endif

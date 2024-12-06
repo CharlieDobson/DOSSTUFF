@@ -7,7 +7,12 @@
 
 #include <dos.h>		// REGS
 #include <limits.h>     // integral limits
+#if defined( _MSC_VER ) || defined( __WATCOMC__ )
 #include <graph.h>      // graphics libraries
+#elif __SC__
+#include <disp.h>
+#endif
+#include "structs.hpp"
 #ifdef _DEBUG
 #include <stdio.h>		// puts
 #endif
@@ -35,7 +40,6 @@ class msmouse
     unsigned int m_y_position;
     unsigned int m_x_position;
     unsigned int m_cols_max;
-    unsigned int m_rows_max;
 
 public:
     msmouse( void );
