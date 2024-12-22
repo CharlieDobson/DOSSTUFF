@@ -158,8 +158,8 @@ void DOSForms::ClearRow( const unsigned short row )
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     _settextposition( row, 1 );
@@ -169,8 +169,8 @@ void DOSForms::ClearRow( const unsigned short row )
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 }
 
@@ -277,8 +277,8 @@ void DOSForms::TitleColor( const forms_colors_t Color )
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     _settextcolor( m_title_color.foreground );
@@ -287,8 +287,8 @@ void DOSForms::TitleColor( const forms_colors_t Color )
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 
     if ( m_title_text[0] != '\0' ) {
@@ -309,8 +309,8 @@ void DOSForms::TitleColor( const foreground_colors_t foreground, const backgroun
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     _settextcolor( m_title_color.foreground );
@@ -319,8 +319,8 @@ void DOSForms::TitleColor( const foreground_colors_t foreground, const backgroun
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 
     if ( m_title_text[0] != '\0' ) {
@@ -340,8 +340,8 @@ void DOSForms::TitleText( const char* Text )
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     short center = ( strlen( m_title_text ) + m_text_columns ) / 2 - strlen( m_title_text );
@@ -350,8 +350,8 @@ void DOSForms::TitleText( const char* Text )
     _setbkcolor( _getbkcolor() );
     _outtext( m_title_text );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 }
 
@@ -367,8 +367,8 @@ void DOSForms::StatusBarColor( const forms_colors_t Color )
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     _settextcolor( m_status_bar_color.foreground );
@@ -377,8 +377,8 @@ void DOSForms::StatusBarColor( const forms_colors_t Color )
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 
     if ( m_status_bar_text[0] != '\0' ) {
@@ -399,8 +399,8 @@ void DOSForms::StatusBarColor( const foreground_colors_t foreground, const backg
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     _settextcolor( m_status_bar_color.foreground );
@@ -409,8 +409,8 @@ void DOSForms::StatusBarColor( const foreground_colors_t foreground, const backg
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 
     if ( m_status_bar_text[0] != '\0' ) {
@@ -430,8 +430,8 @@ void DOSForms::StatusBarText( const char* Text )
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     _settextposition( m_text_rows, 1 );
@@ -439,8 +439,8 @@ void DOSForms::StatusBarText( const char* Text )
     _setbkcolor( _getbkcolor() );
     _outtext( m_status_bar_text );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 }
 
@@ -449,8 +449,8 @@ void DOSForms::StatusBarText( const char* Text )
 **************************************************/
 void DOSForms::OpenForm( void )
 {
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     isFormOpen = TRUE;
@@ -460,15 +460,15 @@ void DOSForms::OpenForm( void )
     _clearscreen( _GCLEARSCREEN );
     _settextcursor( 0x2000 );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 
     TitleColor( m_title_color ); // this will call TitleText() as well
     StatusBarColor( m_status_bar_color ); // this will call StatusBarText() as well
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
 
         if ( m_title_color.foreground != FG_NO_COLOR ) {
             _settextcolor( m_title_color.foreground );
@@ -482,8 +482,8 @@ void DOSForms::OpenForm( void )
         _settextposition( 1, 1 );
         _outtext( m_mouse_control );
 
-        if ( mouse.isCursorHidden() ) {
-            mouse.showCursor();
+        if ( mouse.IsCursorHidden() ) {
+            mouse.ShowCursor();
         }
     }
 }
@@ -502,8 +502,8 @@ void DOSForms::RemoveTitleBar( void )
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     _settextcolor( m_form_color.foreground );
@@ -512,15 +512,15 @@ void DOSForms::RemoveTitleBar( void )
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
     
-    if ( mouse.isInited() ) {
+    if ( mouse.IsInited() ) {
         _settextposition( 1, 1 );
         _settextcolor( _gettextcolor() );
         _setbkcolor( _getbkcolor() );
         _outtext( m_mouse_control );
     }
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 }
 
@@ -538,8 +538,8 @@ void DOSForms::RemoveStatusBar( void )
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     _settextcolor( m_form_color.foreground );
@@ -548,8 +548,8 @@ void DOSForms::RemoveStatusBar( void )
     _clearscreen( _GWINDOW );
     _settextwindow( 1, 1, m_text_rows, m_text_columns );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 }
 
@@ -563,8 +563,8 @@ void DOSForms::DrawButton( const FormButton button )
         return;
     }
 
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     // draw drop shadow first
@@ -593,16 +593,16 @@ void DOSForms::DrawButton( const FormButton button )
     _settextposition( text_y, text_x );
     _outtext( button.label() );
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 }
 
 /*
 button_t DOSForms::MessageBox( const FormMessage message )
 {
-    if ( mouse.isInited() && !mouse.isCursorHidden() ) {
-        mouse.hideCursor();
+    if ( mouse.IsInited() && !mouse.IsCursorHidden() ) {
+        mouse.HideCursor();
     }
 
     button_t button_id;
@@ -618,8 +618,8 @@ button_t DOSForms::MessageBox( const FormMessage message )
 
     RestoreWindow();
 
-    if ( mouse.isInited() && mouse.isCursorHidden() ) {
-        mouse.showCursor();
+    if ( mouse.IsInited() && mouse.IsCursorHidden() ) {
+        mouse.ShowCursor();
     }
 
     return button_id;
