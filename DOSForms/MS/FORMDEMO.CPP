@@ -21,8 +21,8 @@ int main( int argc, char* argv[] )
 
     app.OpenForm();
 
-    if ( app.mouse.isInited() ) {
-        app.mouse.showCursor();
+    if ( app.mouse.IsInited() ) {
+        app.mouse.ShowCursor();
     }
 
     for ( int i = 0; i < sizeof( buttons ) / sizeof( buttons[0] ); ++i ) {
@@ -30,11 +30,11 @@ int main( int argc, char* argv[] )
     }
 
     while ( kb_input != 27 ) {
-        if ( app.mouse.isInited() ) {
+        if ( app.mouse.IsInited() ) {
             static int mouse_status = -1;
             static int old_mouse_status = -1;
 
-            mouse_status = app.mouse.status();
+            mouse_status = app.mouse.Status();
             mouse_x = app.mouse.xPosition();
             mouse_y = app.mouse.yPosition();
 

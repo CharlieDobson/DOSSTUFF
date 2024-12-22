@@ -68,12 +68,12 @@ msmouse::~msmouse( void )
     #endif
 }
 
-int msmouse::isInited( void ) const
+int msmouse::IsInited( void ) const
 {
 	return m_inited;
 }
 
-int msmouse::isCursorHidden( void ) const
+int msmouse::IsCursorHidden( void ) const
 {
 	return m_cursor_hidden;
 }
@@ -96,7 +96,7 @@ unsigned int msmouse::yPosition( void ) const
     return m_y_position / 8;
 }
 
-void msmouse::cursorPosition( const unsigned int x, const unsigned int y )
+void msmouse::CursorPosition( const unsigned int x, const unsigned int y )
 {
     if ( !m_inited ) {
         return;
@@ -112,7 +112,7 @@ void msmouse::cursorPosition( const unsigned int x, const unsigned int y )
     m_y_position = y;
 }
 
-void msmouse::showCursor( void )
+void msmouse::ShowCursor( void )
 {
     if ( !m_inited ) {
         return;
@@ -129,7 +129,7 @@ void msmouse::showCursor( void )
     m_cursor_hidden = 0;
 }
 
-void msmouse::hideCursor( void )
+void msmouse::HideCursor( void )
 {
     if ( !m_inited ) {
         return;
@@ -156,7 +156,7 @@ void msmouse::hideCursor( void )
     2   middle button
     Ignore all other bits
 *********************************************************************/
-int msmouse::status( void )
+int msmouse::Status( void )
 {
     if ( !m_inited ) {
         return INT_MAX;
@@ -175,7 +175,7 @@ int msmouse::status( void )
     Status( unsigned *, unsigned *)
     same as above but returns mouse position in x and y
 *********************************************************************/
-int msmouse::status( unsigned int *x, unsigned int *y )
+int msmouse::Status( unsigned int *x, unsigned int *y )
 {
     if ( !m_inited ) {
         return INT_MAX;
@@ -207,7 +207,7 @@ int msmouse::status( unsigned int *x, unsigned int *y )
     2   middle button
     Ignore all other bits
 *********************************************************************/
-int msmouse::getButtonPress( int *button, unsigned int *x_position, unsigned int *y_position )
+int msmouse::GetButtonPress( int *button, unsigned int *x_position, unsigned int *y_position )
 {
     if ( !m_inited ) {
         return INT_MAX;
@@ -239,7 +239,7 @@ int msmouse::getButtonPress( int *button, unsigned int *x_position, unsigned int
     2   middle button
     Ignore all other bits
 *********************************************************************/
-int msmouse::getButtonRelease( int *button, unsigned int *x_position, unsigned int *y_position )
+int msmouse::GetButtonRelease( int *button, unsigned int *x_position, unsigned int *y_position )
 {
     if ( !m_inited ) {
         return INT_MAX;
@@ -260,7 +260,7 @@ int msmouse::getButtonRelease( int *button, unsigned int *x_position, unsigned i
     SetArea*()
     defines the coordinates the mouse is allowed to move in
 *********************************************************************/
-void msmouse::setAreax( const unsigned int min, const unsigned int max )
+void msmouse::SetAreax( const unsigned int min, const unsigned int max )
 {
     if ( !m_inited ) {
         return;
@@ -278,7 +278,7 @@ void msmouse::setAreax( const unsigned int min, const unsigned int max )
     int86( mouseint, &regs, &regs );
 }
 
-void msmouse::setAreay( const unsigned int min, const unsigned int max )
+void msmouse::SetAreay( const unsigned int min, const unsigned int max )
 {
     if ( !m_inited ) {
         return;
@@ -296,7 +296,7 @@ void msmouse::setAreay( const unsigned int min, const unsigned int max )
     int86( mouseint, &regs, &regs );
 }
 
-void msmouse::setArea( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max )
+void msmouse::SetArea( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max )
 {
     if ( !m_inited ) {
         return;
@@ -319,7 +319,7 @@ void msmouse::setArea( const unsigned int x_min, const unsigned int y_min, const
 }
 
 // Read motion counters in mickeys (1/200 inch)
-void msmouse::readCounters( int *x, int *y )
+void msmouse::ReadCounters( int *x, int *y )
 {
     if ( !m_inited ) {
         return;
@@ -334,7 +334,7 @@ void msmouse::readCounters( int *x, int *y )
 }
 
 // Set mouse movement speed.  Higher values = slower, lower values = faster
-void msmouse::movementSpeed( const unsigned int x, const unsigned int y )
+void msmouse::MovementSpeed( const unsigned int x, const unsigned int y )
 {
     if ( !m_inited ) {
         return;
@@ -348,7 +348,7 @@ void msmouse::movementSpeed( const unsigned int x, const unsigned int y )
     int86( mouseint, &regs, &regs );
 }
 
-void msmouse::hidePointerInRegion( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max )
+void msmouse::HidePointerInRegion( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max )
 {
     if ( !m_inited ) {
         return;

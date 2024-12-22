@@ -122,20 +122,13 @@ char* FormButton::label( void ) const
 
 void FormButton::color( const forms_colors_t color )
 {
-    if ( color.foreground != FG_NO_COLOR || color.background != BG_NO_COLOR ) {
-        m_color = color;
-    }
+    m_color = color;
 }
 
 void FormButton::color( const foreground_colors_t foreground, const background_colors_t background )
 {
-    if ( foreground != FG_NO_COLOR ) {
-        m_color.foreground = foreground;
-    }
-
-    if ( background != BG_NO_COLOR ) {
-        m_color.background = background;
-    }
+    m_color.foreground = foreground;
+    m_color.background = background;
 }
 
 void FormButton::coordinates( const window_coordinates_t coordinates )

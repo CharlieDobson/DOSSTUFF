@@ -45,23 +45,23 @@ public:
     msmouse( void );
     ~msmouse( void );
 
-	int isInited( void ) const;
-	int isCursorHidden( void ) const;
+	int IsInited( void ) const;
+	int IsCursorHidden( void ) const;
     unsigned int xPosition( void ) const;
     unsigned int yPosition( void ) const;
-    void cursorPosition( const unsigned int x, const unsigned int y );
-    void showCursor( void );
-    void hideCursor( void );
-    int status( void );
-    int status( unsigned int *x, unsigned int *y );
-    int getButtonPress( int *button, unsigned int *x_position, unsigned int *y_position );
-    int getButtonRelease( int *button, unsigned int *x_position, unsigned int *y_position );
-    void setAreax( const unsigned int min, const unsigned int max );
-    void setAreay( const unsigned int min, const unsigned int max );
-    void setArea( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max );
-    void readCounters( int *x, int *y );
-    void movementSpeed( const unsigned int x, const unsigned int y );
-    void hidePointerInRegion( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max );
+    void CursorPosition( const unsigned int x, const unsigned int y );
+    void ShowCursor( void );
+    void HideCursor( void );
+    int Status( void );
+    int Status( unsigned int *x, unsigned int *y );
+    int GetButtonPress( int *button, unsigned int *x_position, unsigned int *y_position );
+    int GetButtonRelease( int *button, unsigned int *x_position, unsigned int *y_position );
+    void SetAreax( const unsigned int min, const unsigned int max );
+    void SetAreay( const unsigned int min, const unsigned int max );
+    void SetArea( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max );
+    void ReadCounters( int *x, int *y );
+    void MovementSpeed( const unsigned int x, const unsigned int y );
+    void HidePointerInRegion( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max );
 };
 
 #endif  // _WINDOWS
