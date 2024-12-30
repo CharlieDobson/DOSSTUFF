@@ -29,9 +29,9 @@
    80 column displays we divide by 8.  This is reflected throughout the code.
 */
 
-const unsigned int LEFT_BUTTON = 1;
-const unsigned int RIGHT_BUTTON = 2;
-const unsigned int MIDDLE_BUTTON = 0;
+const unsigned int MOUSE_LEFT_BUTTON = 1;
+const unsigned int MOUSE_RIGHT_BUTTON = 2;
+const unsigned int MOUSE_MIDDLE_BUTTON = 0;
 
 class msmouse
 {
@@ -45,17 +45,17 @@ public:
     msmouse( void );
     ~msmouse( void );
 
-	int IsInited( void ) const;
-	int IsCursorHidden( void ) const;
-    unsigned int xPosition( void ) const;
-    unsigned int yPosition( void ) const;
+	const int IsInited( void ) const;
+	const int IsCursorHidden( void ) const;
+    const unsigned int xPosition( void ) const;
+    const unsigned int yPosition( void ) const;
     void CursorPosition( const unsigned int x, const unsigned int y );
     void ShowCursor( void );
     void HideCursor( void );
-    int Status( void );
-    int Status( unsigned int *x, unsigned int *y );
-    int GetButtonPress( int *button, unsigned int *x_position, unsigned int *y_position );
-    int GetButtonRelease( int *button, unsigned int *x_position, unsigned int *y_position );
+    const int Status( void ) const;
+    const int Status( unsigned int *x, unsigned int *y ) const;
+    const int GetButtonPress( int *button, unsigned int *x_position, unsigned int *y_position ) const;
+    const int GetButtonRelease( int *button, unsigned int *x_position, unsigned int *y_position ) const;
     void SetAreax( const unsigned int min, const unsigned int max );
     void SetAreay( const unsigned int min, const unsigned int max );
     void SetArea( const unsigned int x_min, const unsigned int y_min, const unsigned int x_max, const unsigned int y_max );

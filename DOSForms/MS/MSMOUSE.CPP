@@ -63,22 +63,19 @@ msmouse::~msmouse( void )
 
     regs.x.ax = 0;
     int86( mouseint, &regs, &regs );
-    #ifdef _DEBUG
-    puts( "Mouse destructor called" );
-    #endif
 }
 
-int msmouse::IsInited( void ) const
+const int msmouse::IsInited( void ) const
 {
 	return m_inited;
 }
 
-int msmouse::IsCursorHidden( void ) const
+const int msmouse::IsCursorHidden( void ) const
 {
 	return m_cursor_hidden;
 }
 
-unsigned int msmouse::xPosition( void ) const
+const unsigned int msmouse::xPosition( void ) const
 {
     if ( !m_inited ) {
         return UINT_MAX;
@@ -87,7 +84,7 @@ unsigned int msmouse::xPosition( void ) const
     return m_cols_max == 40 ? m_x_position / 16 : m_x_position / 8;
 }
 
-unsigned int msmouse::yPosition( void ) const
+const unsigned int msmouse::yPosition( void ) const
 {
     if ( !m_inited ) {
         return UINT_MAX;
@@ -156,7 +153,7 @@ void msmouse::HideCursor( void )
     2   middle button
     Ignore all other bits
 *********************************************************************/
-int msmouse::Status( void )
+const int msmouse::Status( void ) const
 {
     if ( !m_inited ) {
         return INT_MAX;
@@ -175,7 +172,7 @@ int msmouse::Status( void )
     Status( unsigned *, unsigned *)
     same as above but returns mouse position in x and y
 *********************************************************************/
-int msmouse::Status( unsigned int *x, unsigned int *y )
+const int msmouse::Status( unsigned int *x, unsigned int *y ) const
 {
     if ( !m_inited ) {
         return INT_MAX;
@@ -207,7 +204,7 @@ int msmouse::Status( unsigned int *x, unsigned int *y )
     2   middle button
     Ignore all other bits
 *********************************************************************/
-int msmouse::GetButtonPress( int *button, unsigned int *x_position, unsigned int *y_position )
+const int msmouse::GetButtonPress( int *button, unsigned int *x_position, unsigned int *y_position ) const
 {
     if ( !m_inited ) {
         return INT_MAX;
@@ -239,7 +236,7 @@ int msmouse::GetButtonPress( int *button, unsigned int *x_position, unsigned int
     2   middle button
     Ignore all other bits
 *********************************************************************/
-int msmouse::GetButtonRelease( int *button, unsigned int *x_position, unsigned int *y_position )
+const int msmouse::GetButtonRelease( int *button, unsigned int *x_position, unsigned int *y_position ) const
 {
     if ( !m_inited ) {
         return INT_MAX;

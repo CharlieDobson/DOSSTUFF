@@ -3,51 +3,55 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP 1
 
-#include <stdlib.h> // toupper()
-#include <ctype.h> // toupper()
-#include <string.h> // strlen()
+#include <stdlib.h>     // toupper
+#include <ctype.h>      // toupper
+#include <string.h>     // strlen
+#if _DEBUG
+#include <stdio.h>		// puts
+#endif
+#if defined( _MSC_VER ) || defined( __WATCOMC__ )
+#include <graph.h>
+#elif __SC__
+#include <disp.h>
+#endif
+#include "structs.hpp"
 
 class Window
 {
-    unsigned short m_top;
-    unsigned short m_left;
-    unsigned short m_bottom;
-    unsigned short m_right;
-    unsigned short m_color;
-    unsigned short m_borderstyle;
-    short m_drop_shadow;
-    char m_title[21];
+    window_coordinates_t m_coordinates;
+    forms_colors_t m_color;
+    window_border_style_t m_border_style;
+    short m_cols_max;
+    short m_rows_max;
+    boolean m_drop_shadow;
+    char *m_title;
     char m_title_justify;
-    char m_label[41];
 
 public:
     Window( void );
-    Window( const unsigned short Top, const unsigned short Left, const unsigned short Bottom, const unsigned short Right );
-    Window( const unsigned short Top, const unsigned short Left, const unsigned short Bottom, const unsigned short Right, const unsigned short color, const unsigned short Style );
+    Window( const foreground_colors_t Foreground, const background_colors_t Background );
+    Window( const short Row, const short Column, const short EndRow, const short EndColumn );
+    Window( const short Row, const short Column, const short EndRow, const short EndColumn, const foreground_colors_t Foreground, const background_colors_t Background, const window_border_style_t Style );
+    Window( const short Row, const short Column, const short EndRow, const short EndColumn, const foreground_colors_t Foreground, const background_colors_t Background, const window_border_style_t Style, const char* TitleText );
     ~Window( void );
 
-    void Top( const unsigned short point );
-    unsigned short Top( void ) const;
-    void Left( const unsigned short point );
-    unsigned short Left( void ) const;
-    void Bottom( const unsigned short point );
-    unsigned short Bottom( void ) const;
-    void Right( const unsigned short point );
-    unsigned short Right( void ) const;
-    void Color( const unsigned short color );
-    unsigned short Color( void ) const;
-    void BorderStyle( const unsigned short Style );
-    unsigned short BorderStyle( void ) const;
-    void DropShadow( const short dropshadow );
-    short DropShadow( void ) const;
-    void Title( const char* Text );
-    char* Title( void ) const;
-    void TitleJustify( const char Justify );
-    char TitleJustify( void ) const;
-    void Label( const char* Text );
-    char* Label( void ) const;
+    // accessors
+    const window_coordinates_t Coordinates( void ) const;
+    const forms_colors_t Color( void ) const;
+    const window_border_style_t BorderStyle( void ) const;
+    boolean DropShadow( void ) const;
+    const char* Title( void ) const;
+    const char TitleJustify( void ) const;
 
-    void Coords( const unsigned short Top, const unsigned short Left, const unsigned short Bottom, const unsigned short Right );
+    // mutators
+    void Coordinates( const window_coordinates_t Coordinates );
+    void Coordinates( const short Row, const short Column, const short EndRow, const short EndColumn );
+    void Color( const forms_colors_t Color );
+    void Color( const foreground_colors_t Foreground, const background_colors_t Background );
+    void BorderStyle( const window_border_style_t Style );
+    void DropShadow( const boolean DropShadow );
+    void Title( const char* Text );
+    void TitleJustify( const char Justify );
 };
 
 #endif // WINDOW_H
