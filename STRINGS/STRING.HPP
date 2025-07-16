@@ -3,12 +3,6 @@
 #ifndef STRING_HPP
 #define STRING_HPP 1
 
-#include <stdlib.h>         // NULL, strtol, strtoul, strtof, strtod
-#include <stdio.h>          // sprintf, _snprintf
-#include <string.h>         // strlen, strcpy, strcmp, strcat
-#include <iostream.h>       // operator<<, operator>>
-#include <limits.h>         // for integral limits
-
 class String
 {
     char* m_string;

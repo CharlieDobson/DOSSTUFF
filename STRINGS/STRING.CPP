@@ -1,5 +1,11 @@
 // implementation file for custom string class
 
+
+#include <stdlib.h>         // NULL, strtol, strtoul, strtof, strtod
+#include <stdio.h>          // sprintf, _snprintf
+#include <string.h>         // strlen, strcpy, strcmp, strcat
+#include <iostream.h>       // operator<<, operator>>
+#include <limits.h>         // for integral limits
 #include "string.hpp"
 
 String::String( void )
