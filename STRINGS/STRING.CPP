@@ -2,17 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if defined( _M_I86SM ) || defined( _M_I86MM )
-    #define ALLOC( size ) ( (char far*)_fmalloc( size ) )
-    #define DEALLOC( ptr ) _ffree( ptr )
-
-    #define STRLEN( s ) _fstrlen( s )
-    #define STRCPY( dst, src ) _fstrcpy( dst, src )
-    #define STRCAT( dst, src ) _fstrcat( dst, src )
-    #define STRCMP( a, b ) _fstrcmp( a, b )
-    #define STRNCMP( a, b, n ) _fstrncmp( a, b, n )
-    #define STRSTR( hay, needle ) _fstrstr( hay, needle )
-#else
+#if defined( _M_I86TM ) || defined( __TINY__ )
+    #error "Tiny model not supported by this library"
+#elif defined( _M_I86SM ) || defined( __SMALL__ )
     #define ALLOC( size ) ( (char far*)malloc( size ) )
     #define DEALLOC( ptr ) free( ptr )
 
@@ -22,6 +14,16 @@
     #define STRCMP( a, b ) strcmp( a, b )
     #define STRNCMP( a, b, n ) strncmp( a, b, n )
     #define STRSTR( hay, needle ) strstr( hay, needle )
+#else
+    #define ALLOC( size ) ( (char far*)_fmalloc( size ) )
+    #define DEALLOC( ptr ) _ffree( ptr )
+
+    #define STRLEN( s ) _fstrlen( s )
+    #define STRCPY( dst, src ) _fstrcpy( dst, src )
+    #define STRCAT( dst, src ) _fstrcat( dst, src )
+    #define STRCMP( a, b ) _fstrcmp( a, b )
+    #define STRNCMP( a, b, n ) _fstrncmp( a, b, n )
+    #define STRSTR( hay, needle ) _fstrstr( hay, needle )
 #endif
 
 String::String( void ) {
