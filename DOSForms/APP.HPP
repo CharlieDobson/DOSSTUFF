@@ -11,10 +11,6 @@ class Application : public DOSForms
 public:
     Application( void );
     Application( const foreground_color_t foreground, const background_color_t background );
-    ~Application( void );
-
-    int ColorsToInt( void );
-    void Draw( void );
 };
 
 #endif

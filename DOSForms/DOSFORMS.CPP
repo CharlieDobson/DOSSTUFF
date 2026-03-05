@@ -5,12 +5,18 @@
 #include <msmouse.h>
 #include <stdlib.h>
 
+boolean DOSForms::IsMouseEnabled = FALSE;
 
 DOSForms::DOSForms( void )
 {
     fg_color = FG_BLUE;
     bg_color = BG_WHITE;
-    IsMouseEnabled = FALSE;
+}
+
+DOSForms::DOSForms( const foreground_color_t foreground, const background_color_t background )
+{
+    fg_color = foreground;
+    bg_color = background;
 }
 
 DOSForms::~DOSForms( void )

@@ -10,7 +10,11 @@ class Popup : public DOSForms
 {
 public:
     Popup( void );
+    Popup( const char* title );
+    Popup( const coordinates_t* coordinates );
+    Popup( const coordinates_t* coordinates, const char* title );
     Popup( const foreground_color_t foreground, const background_color_t background );
+    Popup( const foreground_color_t foreground, const background_color_t background, const char* title );
     Popup( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates );
     Popup( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates, const char* title );
     ~Popup( void );
@@ -22,8 +26,8 @@ public:
     boolean drop_shadow;
 
     // methods
-    int ColorsToInt( void );
     void Draw( void );
+    void SetCoordinates( const unsigned short row, const unsigned short column, const unsigned short end_row, const unsigned short end_column );
     boolean RestoreWindow( void );
 
 protected:

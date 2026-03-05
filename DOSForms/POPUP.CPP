@@ -12,9 +12,6 @@ Popup::Popup( void ) : DOSForms()
     screen_buffer = (unsigned short*)calloc( disp_numrows * disp_numcols + 1, sizeof( unsigned short ) );
 
     fg_color = FG_BLACK;
-    bg_color = BG_WHITE;
-    IsMouseEnabled = FALSE;
-
     coordinates.row = 0;
     coordinates.column = 0;
     coordinates.end_row = 0;
@@ -23,15 +20,75 @@ Popup::Popup( void ) : DOSForms()
     title[0] = '\0';
     text_justification = LEFT;
     drop_shadow = TRUE;
+}
+
+Popup::Popup( const char* title ) : DOSForms()
+{
+    screen_buffer = (unsigned short*)calloc( disp_numrows * disp_numcols + 1, sizeof( unsigned short ) );
+
+    fg_color = FG_BLACK;
+    coordinates.row = 0;
+    coordinates.column = 0;
+    coordinates.end_row = 0;
+    coordinates.end_column = 0;
+    border_style = BORDER_NONE;
+    this->title[0] = '\0';
+    text_justification = LEFT;
+    drop_shadow = TRUE;
+
+    if ( title ) {
+        strncpy( this->title, title, sizeof( this->title ) - 1 );
+        this->title[sizeof( this->title ) - 1] = '\0';
+    }
+}
+
+Popup::Popup( const coordinates_t* coordinates ) : DOSForms()
+{
+    screen_buffer = (unsigned short*)calloc( disp_numrows * disp_numcols + 1, sizeof( unsigned short ) );
+
+    fg_color = FG_BLACK;
+    this->coordinates.row = 0;
+    this->coordinates.column = 0;
+    this->coordinates.end_row = 0;
+    this->coordinates.end_column = 0;
+    border_style = BORDER_NONE;
+    title[0] = '\0';
+    text_justification = LEFT;
+    drop_shadow = TRUE;
+
+    if ( coordinates ) {
+        this->coordinates = *coordinates;
+    }
+}
+
+Popup::Popup( const coordinates_t* coordinates, const char* title ) : DOSForms()
+{
+    screen_buffer = (unsigned short*)calloc( disp_numrows * disp_numcols + 1, sizeof( unsigned short ) );
+
+    fg_color = FG_BLACK;
+    this->coordinates.row = 0;
+    this->coordinates.column = 0;
+    this->coordinates.end_row = 0;
+    this->coordinates.end_column = 0;
+    border_style = BORDER_NONE;
+    this->title[0] = '\0';
+    text_justification = LEFT;
+    drop_shadow = TRUE;
+
+    if ( coordinates ) {
+        this->coordinates = *coordinates;
+    }
+
+    if ( title ) {
+        strncpy( this->title, title, sizeof( this->title ) - 1 );
+        this->title[sizeof( this->title ) - 1] = '\0';
+    }
 }
 
 Popup::Popup( const foreground_color_t foreground, const background_color_t background )
+    : DOSForms( foreground, background )
 {
     screen_buffer = (unsigned short*)calloc( disp_numrows * disp_numcols + 1, sizeof( unsigned short ) );
-
-    fg_color = foreground;
-    bg_color = background;
-    IsMouseEnabled = FALSE;
 
     coordinates.row = 0;
     coordinates.column = 0;
@@ -43,63 +100,82 @@ Popup::Popup( const foreground_color_t foreground, const background_color_t back
     drop_shadow = TRUE;
 }
 
-Popup::Popup( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates )
+Popup::Popup( const foreground_color_t foreground, const background_color_t background, const char* title )
+    : DOSForms( foreground, background )
 {
     screen_buffer = (unsigned short*)calloc( disp_numrows * disp_numcols + 1, sizeof( unsigned short ) );
 
-    fg_color = foreground;
-    bg_color = background;
-    IsMouseEnabled = FALSE;
+    coordinates.row = 0;
+    coordinates.column = 0;
+    coordinates.end_row = 0;
+    coordinates.end_column = 0;
+    border_style = BORDER_NONE;
+    text_justification = LEFT;
+    drop_shadow = TRUE;
+    this->title[0] = '\0';
 
-    if ( NULL != coordinates ) {
-        this->coordinates = *coordinates;
-    } else {
-        this->coordinates.row = 0;
-        this->coordinates.column = 0;
-        this->coordinates.end_row = 0;
-        this->coordinates.end_column = 0;
+    if ( title ) {
+        strncpy( this->title, title, sizeof( this->title ) - 1 );
+        this->title[sizeof( this->title ) - 1] = '\0';
     }
+}
+
+Popup::Popup( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates )
+    : DOSForms( foreground, background )
+{
+    screen_buffer = (unsigned short*)calloc( disp_numrows * disp_numcols + 1, sizeof( unsigned short ) );
+
+    this->coordinates.row = 0;
+    this->coordinates.column = 0;
+    this->coordinates.end_row = 0;
+    this->coordinates.end_column = 0;
     border_style = BORDER_NONE;
     title[0] = '\0';
     text_justification = LEFT;
     drop_shadow = TRUE;
+
+    if ( coordinates ) {
+        this->coordinates = *coordinates;
+    }
 }
 
 Popup::Popup( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates, const char* title )
+    : DOSForms( foreground, background )
 {
     screen_buffer = (unsigned short*)calloc( disp_numrows * disp_numcols + 1, sizeof( unsigned short ) );
 
-    fg_color = foreground;
-    bg_color = background;
-    IsMouseEnabled = FALSE;
-
-    if ( NULL != coordinates ) {
-        this->coordinates = *coordinates;
-    } else {
-        this->coordinates.row = 0;
-        this->coordinates.column = 0;
-        this->coordinates.end_row = 0;
-        this->coordinates.end_column = 0;
-    }
+    this->coordinates.row = 0;
+    this->coordinates.column = 0;
+    this->coordinates.end_row = 0;
+    this->coordinates.end_column = 0;
     border_style = BORDER_NONE;
-    if ( NULL != title ) {
-        strncpy( this->title, title, sizeof( this->title ) - 1 );
-        this->title[ sizeof( this->title ) - 1 ] = '\0';
-    } else {
-        this->title[0] = '\0';
-    }
+    this->title[0] = '\0';
     text_justification = LEFT;
     drop_shadow = TRUE;
+
+    if ( coordinates ) {
+        this->coordinates = *coordinates;
+    }
+    if ( title ) {
+        strncpy( this->title, title, sizeof( this->title ) - 1 );
+        this->title[sizeof( this->title ) - 1] = '\0';
+    }
 }
 
 Popup::~Popup( void )
 {
-    free( screen_buffer );
+    if ( screen_buffer ) free( screen_buffer );
 }
 
-int Popup::ColorsToInt( void )
+void Popup::SetCoordinates( const unsigned short row, const unsigned short column, const unsigned short end_row, const unsigned short end_column )
 {
-    return (int)( ( bg_color << 4 ) | fg_color );
+    // ensure valid coordinates
+    if ( end_row < row || end_column < column ) return;
+
+    coordinates.row = row;
+    coordinates.column = column;
+    coordinates.end_row = end_row;
+    coordinates.end_column = end_column;
 }
 
 boolean Popup::SaveWindow( void )

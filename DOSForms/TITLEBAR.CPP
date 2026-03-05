@@ -3,46 +3,28 @@
 #include "titlebar.hpp"
 #include <disp.h>               // Symantec display functions
 #include <msmouse.h>            // Symantec mouse functions
-#include <stdlib.h>             // required for NULL
 #include <stdio.h>              // _snprintf
 #include <string.h>             // strncpy
 
-TitleBar::TitleBar( void ) : DOSForms()
+TitleBar::TitleBar( void ) : DOSForms( FG_WHITE, BG_BLUE )
 {
-    fg_color = FG_WHITE;
-    bg_color = BG_BLUE;
     Text[0] = '\0';
 }
 
 TitleBar::TitleBar( const foreground_color_t foreground, const background_color_t background )
+    : DOSForms( foreground, background )
 {
-    fg_color = foreground;
-    bg_color = background;
-    IsMouseEnabled = FALSE;
     Text[0] = '\0';
 }
 
 TitleBar::TitleBar( const foreground_color_t foreground, const background_color_t background, const char* title )
+    : DOSForms( foreground, background )
 {
-    fg_color = foreground;
-    bg_color = background;
-    IsMouseEnabled = FALSE;
-    if( NULL != title ) {
+    Text[0] = '\0';
+    if ( title && title[0] != '\0' ) {
         strncpy( Text, title, sizeof( Text ) - 1 );
         Text[sizeof( Text ) - 1] = '\0';
-    } else {
-        Text[0] = '\0';
     }
-}
-
-TitleBar::~TitleBar( void )
-{
-    // destructor code here
-}
-
-int TitleBar::ColorsToInt( void )
-{
-    return (int)( ( bg_color << 4 ) | fg_color );
 }
 
 void TitleBar::Draw( void )

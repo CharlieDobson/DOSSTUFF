@@ -4,31 +4,57 @@
 #error This file should only be compiled by Symantec C++ compiler
 #endif
 #include "button.hpp"
+#include <stdlib.h>             // calloc, free
 #include <disp.h>               // Symantec display functions
 #include <msmouse.h>            // Symantec mouse functions
-#include <stdlib.h>             // required for NULL
 #include <string.h>             // strlen
 
-Button::Button( void ) : DOSForms()
+Button::Button( void ) : DOSForms( FG_YELLOW, BG_GREEN )
 {
-    fg_color = FG_BLACK;
-    bg_color = BG_WHITE;
-    IsMouseEnabled = FALSE;
-
     coordinates.row = 0;
     coordinates.column = 0;
     coordinates.end_row = 0;
     coordinates.end_column = 0;
-    label[0] = '\0';
+    this->label[0] = '\0';
+    drop_shadow = TRUE;
+}
+
+Button::Button( const char* label ) : DOSForms( FG_YELLOW, BG_GREEN )
+{
+    coordinates.row = 0;
+    coordinates.column = 0;
+    coordinates.end_row = 0;
+    coordinates.end_column = 0;
+    this->label[0] = '\0';
+
+    if ( label && label[0] != '\0' ) {
+        strncpy( this->label, label, sizeof( this->label ) - 1 );
+        this->label[ sizeof( this->label ) - 1 ] = '\0';
+    }
+    drop_shadow = TRUE;
+}
+
+Button::Button( const coordinates_t* coordinates, const char* label ) : DOSForms( FG_YELLOW, BG_GREEN )
+{
+    this->coordinates.row = 0;
+    this->coordinates.column = 0;
+    this->coordinates.end_row = 0;
+    this->coordinates.end_column = 0;
+    this->label[0] = '\0';
+
+    if ( coordinates ) {
+        this->coordinates = *coordinates;
+    }
+    if ( label && label[0] != '\0' ) {
+        strncpy( this->label, label, sizeof( this->label ) - 1 );
+        this->label[ sizeof( this->label ) - 1 ] = '\0';
+    }
     drop_shadow = TRUE;
 }
 
 Button::Button( const foreground_color_t foreground, const background_color_t background )
+    : DOSForms( foreground, background )
 {
-    fg_color = foreground;
-    bg_color = background;
-    IsMouseEnabled = FALSE;
-
     coordinates.row = 0;
     coordinates.column = 0;
     coordinates.end_row = 0;
@@ -38,59 +64,85 @@ Button::Button( const foreground_color_t foreground, const background_color_t ba
 }
 
 Button::Button( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates )
+    : DOSForms( foreground, background )
 {
-    fg_color = foreground;
-    bg_color = background;
-    IsMouseEnabled = FALSE;
-
-    if ( NULL != coordinates ) {
-        this->coordinates = *coordinates;
-    } else {
-        this->coordinates.row = 0;
-        this->coordinates.column = 0;
-        this->coordinates.end_row = 0;
-        this->coordinates.end_column = 0;
-    }
+    this->coordinates.row = 0;
+    this->coordinates.column = 0;
+    this->coordinates.end_row = 0;
+    this->coordinates.end_column = 0;
     label[0] = '\0';
+
+    if ( coordinates ) {
+        this->coordinates = *coordinates;
+    }
     drop_shadow = TRUE;
 }
 
 Button::Button( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates, const char* label )
+    : DOSForms( foreground, background )
 {
-    fg_color = foreground;
-    bg_color = background;
-    IsMouseEnabled = FALSE;
+    this->coordinates.row = 0;
+    this->coordinates.column = 0;
+    this->coordinates.end_row = 0;
+    this->coordinates.end_column = 0;
+    this->label[0] = '\0';
 
-    if ( NULL != coordinates ) {
+    if ( coordinates ) {
         this->coordinates = *coordinates;
-    } else {
-        this->coordinates.row = 0;
-        this->coordinates.column = 0;
-        this->coordinates.end_row = 0;
-        this->coordinates.end_column = 0;
     }
-    if ( NULL != label ) {
+    if ( label && label[0] != '\0' ) {
         strncpy( this->label, label, sizeof( this->label ) - 1 );
         this->label[ sizeof( this->label ) - 1 ] = '\0';
-    } else {
-        this->label[0] = '\0';
     }
     drop_shadow = TRUE;
 }
 
-Button::~Button( void )
+Button::Button( const Button& other ) : DOSForms( other.fg_color, other.bg_color )
 {
-    // destructor code here
+    coordinates = other.coordinates;
+    strncpy( label, other.label, sizeof( label ) - 1 );
+    label[ sizeof( label ) - 1 ] = '\0';
+    drop_shadow = other.drop_shadow;
 }
 
-int Button::ColorsToInt( void )
+Button& Button::operator=( const Button& other )
 {
-    return (int)( ( bg_color << 4 ) | fg_color );
+    if ( this != &other ) {
+        fg_color = other.fg_color;
+        bg_color = other.bg_color;
+        coordinates = other.coordinates;
+        strncpy( label, other.label, sizeof( label ) - 1 );
+        label[ sizeof( label ) - 1 ] = '\0';
+        drop_shadow = other.drop_shadow;
+    }
+    return *this;
+}
+
+void Button::SetCoordinates( const unsigned short row, const unsigned short column, const unsigned short end_row, const unsigned short end_column )
+{
+    // ensure valid coordinates
+    if ( end_row < row || end_column < column ) return;
+
+    coordinates.row = row;
+    coordinates.column = column;
+    coordinates.end_row = end_row;
+    coordinates.end_column = end_column;
+}
+
+void Button::SetCoordinates( const unsigned short row, const unsigned short column )
+{
+    // default button size to 3 rows and size of label + 2 columns, or 10 columns if no label
+    label[0] == '\0' ? SetCoordinates( row, column, row + 2, column + 10 ) :
+                      SetCoordinates( row, column, row + 2, column + (unsigned short)strlen( label ) + 2 );
 }
 
 void Button::Draw( void )
 {
     if ( disp_inited == 0 ) return;
+
+    // don't draw button if coordinates are not set
+    if ( coordinates.row == 0 && coordinates.column == 0
+         && coordinates.end_row == 0 && coordinates.end_column == 0 ) return;
 
     if ( IsMouseEnabled ) msm_hidecursor();
 

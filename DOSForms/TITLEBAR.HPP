@@ -12,12 +12,10 @@ public:
     TitleBar( void );
     TitleBar( const foreground_color_t foreground, const background_color_t background );
     TitleBar( const foreground_color_t foreground, const background_color_t background, const char* title );
-    ~TitleBar( void );
 
     char Text[35];
 
     // methods
-    int ColorsToInt( void );
     void Draw( void );
 };
 
