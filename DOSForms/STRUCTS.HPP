@@ -276,6 +276,8 @@ typedef struct
     forms_colors_t color;
     coordinates_t coordinates;
     char label[16];
+    foreground_color_t hotkey_color;
+    char hotkey;
     boolean drop_shadow;
 } forms_button_t;
 

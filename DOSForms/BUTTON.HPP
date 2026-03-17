@@ -20,6 +20,8 @@ public:
     coordinates_t coordinates;
     char label[16];
     boolean drop_shadow;
+    foreground_color_t hotkey_color;
+    char hotkey;
 
     // methods
     void Draw( void );

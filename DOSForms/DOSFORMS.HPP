@@ -14,7 +14,7 @@ public:
 
     foreground_color_t fg_color;
     background_color_t bg_color;
-    static boolean IsMouseEnabled;
+    boolean IsMouseEnabled;
 
     // methods
     virtual int ColorsToInt( void );

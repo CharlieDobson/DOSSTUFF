@@ -15,8 +15,10 @@ Button::Button( void ) : DOSForms( FG_YELLOW, BG_GREEN )
     coordinates.column = 0;
     coordinates.end_row = 0;
     coordinates.end_column = 0;
-    this->label[0] = '\0';
+    label[0] = '\0';
     drop_shadow = TRUE;
+    hotkey_color = FG_BLACK;
+    hotkey = '\0';
 }
 
 Button::Button( const char* label ) : DOSForms( FG_YELLOW, BG_GREEN )
@@ -26,10 +28,12 @@ Button::Button( const char* label ) : DOSForms( FG_YELLOW, BG_GREEN )
     coordinates.end_row = 0;
     coordinates.end_column = 0;
     this->label[0] = '\0';
+    hotkey_color = FG_BLACK;
+    hotkey = '\0';
 
     if ( label && label[0] != '\0' ) {
         strncpy( this->label, label, sizeof( this->label ) - 1 );
-        this->label[ sizeof( this->label ) - 1 ] = '\0';
+        this->label[sizeof( this->label ) - 1] = '\0';
     }
     drop_shadow = TRUE;
 }
@@ -41,13 +45,15 @@ Button::Button( const coordinates_t* coordinates, const char* label ) : DOSForms
     this->coordinates.end_row = 0;
     this->coordinates.end_column = 0;
     this->label[0] = '\0';
+    hotkey_color = FG_BLACK;
+    hotkey = '\0';
 
     if ( coordinates ) {
         this->coordinates = *coordinates;
     }
     if ( label && label[0] != '\0' ) {
         strncpy( this->label, label, sizeof( this->label ) - 1 );
-        this->label[ sizeof( this->label ) - 1 ] = '\0';
+        this->label[sizeof( this->label ) - 1] = '\0';
     }
     drop_shadow = TRUE;
 }
@@ -61,6 +67,8 @@ Button::Button( const foreground_color_t foreground, const background_color_t ba
     coordinates.end_column = 0;
     label[0] = '\0';
     drop_shadow = TRUE;
+    hotkey_color = FG_BLACK;
+    hotkey = '\0';
 }
 
 Button::Button( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates )
@@ -71,6 +79,8 @@ Button::Button( const foreground_color_t foreground, const background_color_t ba
     this->coordinates.end_row = 0;
     this->coordinates.end_column = 0;
     label[0] = '\0';
+    hotkey_color = FG_BLACK;
+    hotkey = '\0';
 
     if ( coordinates ) {
         this->coordinates = *coordinates;
@@ -86,13 +96,15 @@ Button::Button( const foreground_color_t foreground, const background_color_t ba
     this->coordinates.end_row = 0;
     this->coordinates.end_column = 0;
     this->label[0] = '\0';
+    hotkey_color = FG_BLACK;
+    hotkey = '\0';
 
     if ( coordinates ) {
         this->coordinates = *coordinates;
     }
     if ( label && label[0] != '\0' ) {
         strncpy( this->label, label, sizeof( this->label ) - 1 );
-        this->label[ sizeof( this->label ) - 1 ] = '\0';
+        this->label[sizeof( this->label ) - 1] = '\0';
     }
     drop_shadow = TRUE;
 }
@@ -101,8 +113,10 @@ Button::Button( const Button& other ) : DOSForms( other.fg_color, other.bg_color
 {
     coordinates = other.coordinates;
     strncpy( label, other.label, sizeof( label ) - 1 );
-    label[ sizeof( label ) - 1 ] = '\0';
+    label[sizeof( label ) - 1] = '\0';
     drop_shadow = other.drop_shadow;
+    hotkey_color = other.hotkey_color;
+    hotkey = other.hotkey;
 }
 
 Button& Button::operator=( const Button& other )
@@ -112,8 +126,10 @@ Button& Button::operator=( const Button& other )
         bg_color = other.bg_color;
         coordinates = other.coordinates;
         strncpy( label, other.label, sizeof( label ) - 1 );
-        label[ sizeof( label ) - 1 ] = '\0';
+        label[sizeof( label ) - 1] = '\0';
         drop_shadow = other.drop_shadow;
+        hotkey_color = other.hotkey_color;
+        hotkey = other.hotkey;
     }
     return *this;
 }
@@ -144,6 +160,10 @@ void Button::Draw( void )
     if ( coordinates.row == 0 && coordinates.column == 0
          && coordinates.end_row == 0 && coordinates.end_column == 0 ) return;
 
+    // don't draw button if coordinate values are incorrect
+    if ( coordinates.end_row < coordinates.row
+         || coordinates.end_column < coordinates.column ) return;
+
     if ( IsMouseEnabled ) msm_hidecursor();
 
     // draw drop shadow if specified
@@ -168,19 +188,18 @@ void Button::Draw( void )
     // draw button label if specified
     if ( label[0] != '\0' ) {
         short button_width = coordinates.end_column - coordinates.column;
-        char* temp = (char*)calloc( button_width - 2, sizeof( char ) );
+        char* temp = (char*)calloc( button_width, sizeof( char ) );
 
-        if ( NULL == temp ) return;
+        if ( !temp ) return;
 
         strncpy( temp, label, button_width - 2 );
-        temp[button_width - 3] = '\0';
+        temp[button_width - 1] = '\0';
 
         short label_length = (short)strlen( temp );
         short label_row = coordinates.row +
                           ( ( coordinates.end_row - coordinates.row ) / 2 );
         short label_column = coordinates.column +
-                             ( ( coordinates.end_column - coordinates.column ) / 2 ) -
-                             ( label_length / 2 );
+                          ( button_width / 2 ) - ( label_length / 2 );
 
         disp_setattr( ColorsToInt() );
         disp_move( label_row, label_column );
