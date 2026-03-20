@@ -38,15 +38,15 @@ LogFile& LogFile::operator=( const char* Filename )
 int LogFile::Write( const char* Message )
 {
     time_t now = time( NULL );
-    struct tm* t = localtime( &now );
+    struct tm* timeinfo = localtime( &now );
     char ts[20];
-    strftime( ts, sizeof( ts ), "%Y-%m-%dT%H:%M:%S", t );
+    strftime( ts, sizeof( ts ), "%Y-%m-%dT%H:%M:%S", timeinfo );
 
-    ofstream outFile( filename, ios::app );
+    FILE* outFile = fopen( filename, "a" );
     if ( !outFile ) return 0;
 
-    outFile << '[' << ts << "] " << Message << '\n';
-    outFile.close();
+    fprintf( outFile, "[%s] %s\n", ts, Message );
+    fclose( outFile );
     return 1;
 }
 
@@ -62,26 +62,30 @@ int LogFile::Write( const char* fmt, ... )
 
 long LogFile::LogSize( void )
 {
-    ifstream inFile( filename, ios::in | ios::binary );
+    FILE* inFile = fopen( filename, "rb" );
     if ( !inFile ) return 0;
 
-    inFile.seekg( 0, ios::end );
-    long size = inFile.tellg();
-    inFile.close();
+    fseek( inFile, 0, SEEK_END );
+    long size = ftell( inFile );
+    fclose( inFile );
 
     return size;
 }
 
 int LogFile::Exists( void )
 {
-    ifstream inFile( filename );
-    return inFile ? 1 : 0;
+    FILE* inFile = fopen( filename, "r" );
+    if ( !inFile ) return 0;
+    fclose( inFile );
+    return 1;
 }
 
 int LogFile::Clear( void )
 {
-    ofstream outFile( filename, ios::trunc );
-    return outFile ? 1 : 0;
+    FILE* outFile = fopen( filename, "w" );
+    if ( !outFile ) return 0;
+    fclose( outFile );
+    return 1;
 }
 
 const char* LogFile::GetFilename( void )
@@ -89,8 +93,3 @@ const char* LogFile::GetFilename( void )
     return filename;
 }
 
-ostream& operator<<( LogFile& log, const char* str )
-{
-    log.Write( str );
-    return cout;
-}
