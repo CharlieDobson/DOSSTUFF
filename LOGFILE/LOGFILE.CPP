@@ -1,111 +1,96 @@
-// LOGFILE.CPP : Main implementation file for log function
+// logfile.cpp : class implementation file
 
-#include "logfile.hpp"
+#include "LogFile.hpp"
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include <time.h>
 
-LOGFILE::LOGFILE( void )
+LogFile::LogFile( const char* Filename )
 {
-    if ( getenv( "TEMP" ) != NULL ) {
-        m_filename = new char[strlen( getenv( "TEMP" ) ) + strlen( "LOGFILE.TXT" ) + 2];
-        sprintf( m_filename, "%s\\%s", getenv( "TEMP" ), "LOGFILE.TXT" );
+    if ( !Filename || !*Filename ) {
+        filename = new char[1];
+        filename[0] = '\0';
+        return;
     }
-    else {
-        m_filename = new char[strlen( "LOGFILE.TXT" ) + 1];
-        strcpy( m_filename, "LOGFILE.TXT" );
-    }
+
+    filename = new char[strlen( Filename ) + 1];
+    strcpy( filename, Filename );
 }
 
-LOGFILE::LOGFILE( char *Filename )
+LogFile::~LogFile( void )
 {
-    if ( getenv( "TEMP" ) != NULL ) {
-        m_filename = new char[strlen( getenv( "TEMP" ) ) + _MAX_FNAME + _MAX_EXT + 2];
-        _snprintf( m_filename, strlen( getenv( "TEMP" ) ) + _MAX_FNAME + _MAX_EXT + 1, "%s\\%s", getenv( "TEMP" ), Filename );
+    delete[] filename;
+}
+
+LogFile& LogFile::operator=( const char* Filename )
+{
+    if ( !Filename || !*Filename ) {
+        return *this;
     }
-    else {
-        m_filename = new char[_MAX_PATH + 1];
-        strcpy( m_filename, Filename );
-    }
-}
 
-LOGFILE::~LOGFILE( void )
-{
-    delete[] m_filename;
-}
-
-void LOGFILE::swap_pointers( char** first, char** second )
-{
-    char* temp = *first;
-    *first = *second;
-    *second = temp;
-}
-
-LOGFILE& LOGFILE::operator=( const LOGFILE& log )
-{
-    LOGFILE temp( log );
-
-    swap_pointers( &temp.m_filename, &m_filename );
-
+    delete[] filename;
+    filename = new char[strlen( Filename ) + 1];
+    strcpy( filename, Filename );
     return *this;
 }
 
-char* LOGFILE::ToCharString( void ) const
+int LogFile::Write( const char* Message )
 {
-    return m_filename;
+    time_t now = time( NULL );
+    struct tm* t = localtime( &now );
+    char ts[20];
+    strftime( ts, sizeof( ts ), "%Y-%m-%dT%H:%M:%S", t );
+
+    ofstream outFile( filename, ios::app );
+    if ( !outFile ) return 0;
+
+    outFile << '[' << ts << "] " << Message << '\n';
+    outFile.close();
+    return 1;
 }
 
-int LOGFILE::Delete( void )
+int LogFile::Write( const char* fmt, ... )
 {
-	return remove( m_filename ) == 0 ? 1 : 0;
+    char buffer[512];
+    va_list args;
+    va_start( args, fmt );
+    vsprintf( buffer, fmt, args );
+    va_end( args );
+    return Write( buffer );
 }
 
-int LOGFILE::Write( const char* msg )
+long LogFile::LogSize( void )
 {
-    if ( *m_filename == NULL ) {
-        return 0;
-    }
+    ifstream inFile( filename, ios::in | ios::binary );
+    if ( !inFile ) return 0;
 
-    ofstream logfile( m_filename, ios::app, filebuf::sh_read );
+    inFile.seekg( 0, ios::end );
+    long size = inFile.tellg();
+    inFile.close();
 
-    if ( logfile.is_open() ) {
-    	char *timestamp = new char[22];
-    	char *message = new char[255]; // pre-pended space, null term, & newline
-    	struct _dosdate_t date;
-    	struct _dostime_t time;
-    	_dos_getdate( &date );
-    	_dos_gettime( &time );
-
-    	sprintf( timestamp, "[%d/%02d/%02d @ %02d:%02d:%02d]\0", date.year, date.month,
-        	date.day, time.hour, time.minute, time.second );
-
-        _snprintf( message, 258, " %s\n", msg );
-
-		logfile.write( timestamp, strlen( timestamp ) );
-		logfile.write( message, strlen( message ) );
-
-        logfile.close();
-	    delete[] message;
-        delete[] timestamp;
-	    return 1;
-    }
-
-    return 0;
+    return size;
 }
 
-unsigned long LOGFILE::Size( void )
+int LogFile::Exists( void )
 {
-    if ( *m_filename == NULL ) {
-        return 0L;
-    }
+    ifstream inFile( filename );
+    return inFile ? 1 : 0;
+}
 
-    ifstream file( m_filename, ios::in, filebuf::sh_read );
+int LogFile::Clear( void )
+{
+    ofstream outFile( filename, ios::trunc );
+    return outFile ? 1 : 0;
+}
 
-    if ( !file.is_open() ) {
-        return 0L;
-    }
+const char* LogFile::GetFilename( void )
+{
+    return filename;
+}
 
-    file.seekg( 0, file.end );
-    unsigned long file_size = file.tellg();
-    file.seekg( 0, file.beg );
-    file.close();
-
-    return file_size;
+ostream& operator<<( LogFile& log, const char* str )
+{
+    log.Write( str );
+    return cout;
 }

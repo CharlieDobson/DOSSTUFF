@@ -1,37 +1,29 @@
-// LOGFILE.HPP : definition file for LOGFILE class
+// logfile.hpp : class definition file
 
 #ifndef LOGFILE_HPP
-#define LOGFILE_HPP 1
+#define LOGFILE_HPP
 
-#include <stdlib.h>	// _MAX_FNAME & _MAX_EXT etc.
-#include <stdio.h>      // sprintf(), _snprintf()
-#include <string.h>     // strlen(), strcat(), strcpy()
-#include <dos.h>        // _dos_getdate & _dos_gettime
-#include <fstream.h>	// ofstream
-#include <iostream.h>   // seekg
+#include <iostream.h>
+#include <stdarg.h>
 
-class LOGFILE
+class LogFile
 {
-    char *m_filename;
-
-    void swap_pointers( char** first, char** second );
+    char* filename;
 
 public:
-    LOGFILE( void );
-    LOGFILE( char *Filename );
-    ~LOGFILE( void );
+    LogFile( const char* Filename );
+    ~LogFile( void );
 
-    // operators
-    LOGFILE& operator=( const char* Filename );
-    LOGFILE& operator=( const LOGFILE& log );
+    LogFile& operator=( const char* Filename );
 
-    // accessors and mutators
-    char* ToCharString( void ) const;
+    int Write( const char* Message );
+    int Write( const char* fmt, ... );
+    long LogSize( void );
+    int Exists( void );
+    int Clear( void );
+    const char* GetFilename( void );
 
-    // methods
-    int Write( const char* msg );
-    int Delete( void );
-    unsigned long Size( void );
+    friend ostream& operator<<( LogFile& log, const char* str );
 };
 
-#endif // LOGFILE_HPP
+#endif
