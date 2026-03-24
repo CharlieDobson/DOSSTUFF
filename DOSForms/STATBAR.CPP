@@ -43,7 +43,7 @@ void StatusBar::Print( const char* message )
 
     if ( !buffer ) return;
 
-    strncpy( buffer, message, disp_numcols - 2 );
+    strncpy( buffer, message, disp_numcols - 3 );
     buffer[disp_numcols - 3] = '\0';
 
     if ( IsMouseEnabled ) msm_hidecursor();
