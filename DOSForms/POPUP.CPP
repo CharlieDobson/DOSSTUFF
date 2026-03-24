@@ -182,6 +182,8 @@ boolean Popup::SaveWindow( void )
 {
     if ( disp_inited == 0 ) return FALSE;
 
+    if ( !screen_buffer ) return FALSE;
+
     if ( coordinates.row == 0 && coordinates.column == 0
          && coordinates.end_row == 0 && coordinates.end_column == 0 ) return FALSE;
 
@@ -210,6 +212,8 @@ boolean Popup::SaveWindow( void )
 boolean Popup::RestoreWindow( void )
 {
     if ( disp_inited == 0 ) return FALSE;
+
+    if ( !screen_buffer ) return FALSE;
 
     if ( coordinates.row == 0 && coordinates.column == 0
          && coordinates.end_row == 0 && coordinates.end_column == 0 ) return FALSE;

@@ -19,6 +19,11 @@ public:
     Popup( const foreground_color_t foreground, const background_color_t background, const coordinates_t* coordinates, const char* title );
     ~Popup( void );
 
+private:
+    Popup( const Popup & );
+    Popup &operator=( const Popup & );
+
+public:
     coordinates_t coordinates;
     border_style_t border_style;
     char title[35];
